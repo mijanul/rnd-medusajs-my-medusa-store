@@ -22,7 +22,9 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
         "published_at",
         "created_at",
         "updated_at",
+        "deleted_at",
       ],
+      withDeleted: true,
     });
 
     res.json({
@@ -73,9 +75,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
       });
     }
 
-    // Create the page
-    const pageModule = req.scope.resolve("page") as any;
-    const pageService = pageModule.service("page");
+    const pageService = req.scope.resolve("page") as any;
 
     const page = await pageService.createPages({
       title,

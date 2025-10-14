@@ -6,7 +6,7 @@ import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
  * Fetch a single page by ID
  */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
-  const { id } = req.params;
+  const id = req.params.id;
 
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
@@ -46,11 +46,11 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 }
 
 /**
- * POST /admin/pages/:id
+ * PATCH /admin/pages/:id
  * Update a page
  */
-export async function POST(req: MedusaRequest, res: MedusaResponse) {
-  const { id } = req.params;
+export async function PATCH(req: MedusaRequest, res: MedusaResponse) {
+  const id = req.params.id || (req.params as any)["0"];
   const { title, slug, content, meta_title, meta_description, is_published } =
     req.body as {
       title?: string;
@@ -67,7 +67,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     // Check if page exists
     const { data: existingPages } = await query.graph({
       entity: "page",
-      fields: ["id"],
+      fields: ["id", "published_at"],
       filters: { id },
     });
 
@@ -92,9 +92,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
       }
     }
 
-    // Update the page
-    const pageModule = req.scope.resolve("page") as any;
-    const pageService = pageModule.service("page");
+    const pageService = req.scope.resolve("page") as any;
 
     const updateData: any = {};
     if (title !== undefined) updateData.title = title;
@@ -110,7 +108,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
       }
     }
 
-    const page = await pageService.updatePages(id, updateData);
+    const page = await pageService.updatePages({ id, ...updateData });
 
     res.json({
       page,
@@ -125,18 +123,18 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
 
 /**
  * DELETE /admin/pages/:id
- * Delete a page
+ * Soft delete a page by setting deleted_at timestamp
  */
 export async function DELETE(req: MedusaRequest, res: MedusaResponse) {
-  const { id } = req.params;
+  const id = req.params.id;
 
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
   try {
-    // Check if page exists
+    // Check if page exists and is not already deleted
     const { data: existingPages } = await query.graph({
       entity: "page",
-      fields: ["id"],
+      fields: ["id", "deleted_at", "is_published"],
       filters: { id },
     });
 
@@ -146,15 +144,25 @@ export async function DELETE(req: MedusaRequest, res: MedusaResponse) {
       });
     }
 
-    // Delete the page
-    const pageModule = req.scope.resolve("page") as any;
-    const pageService = pageModule.service("page");
+    if (existingPages[0].deleted_at) {
+      return res.status(400).json({
+        message: "Page is already deleted",
+      });
+    }
 
-    await pageService.deletePages(id);
+    const pageService = req.scope.resolve("page") as any;
+
+    // Soft delete by setting deleted_at to current timestamp
+    await pageService.updatePages({
+      id,
+      is_published: false,
+      deleted_at: new Date(),
+    });
 
     res.status(200).json({
       id,
       deleted: true,
+      deleted_at: new Date(),
     });
   } catch (error) {
     console.error("Error deleting page:", error);

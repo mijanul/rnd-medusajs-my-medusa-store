@@ -112,7 +112,7 @@ United States</p>`,
 
   for (const pageData of pages) {
     await pageModuleService.createPages(pageData);
-    console.log(`✓ Created page: ${pageData.title}`);
+    console.log(`Created page: ${pageData.title}`);
   }
 
   console.log("Pages seeded successfully!");

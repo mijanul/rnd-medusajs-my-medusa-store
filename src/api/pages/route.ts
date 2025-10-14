@@ -18,6 +18,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
         "meta_title",
         "meta_description",
         "published_at",
+        "deleted_at",
       ],
       filters: {
         is_published: true,

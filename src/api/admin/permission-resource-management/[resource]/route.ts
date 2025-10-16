@@ -43,20 +43,18 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
     const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
 
     // Get existing permissions for this resource
-    const allPermissions = await roleManagementService.listPermissions({});
-    const existingPermissions = allPermissions.filter(
-      (p: any) => p.resource === resource
-    );
+    const existingPermissions =
+      await roleManagementService.getPermissionsByResource(resource);
 
     // Delete all existing permissions for this resource
     for (const perm of existingPermissions) {
-      await roleManagementService.deletePermissions(perm.id);
+      await roleManagementService.deletePermission(perm.id);
     }
 
     // Create new permissions
     const createdPermissions: any[] = [];
     for (const perm of permissions) {
-      const created = await roleManagementService.createPermissions({
+      const created = await roleManagementService.createPermission({
         name: `${resource}-${perm.action}`,
         resource: resource,
         action: perm.action,
@@ -88,24 +86,23 @@ export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
 
-    // First get all permissions for this resource
-    const allPermissions = await roleManagementService.listPermissions({});
-    const permissions = allPermissions.filter(
-      (p: any) => p.resource === resource
+    // Get all permissions for this resource
+    const permissions = await roleManagementService.getPermissionsByResource(
+      resource
     );
 
     console.log(
       `[DEBUG] Found ${permissions.length} permissions for resource: ${resource}`
     );
 
-    // Delete all permissions for the resource
-    for (const perm of permissions) {
-      await roleManagementService.deletePermissions(perm.id);
-    }
+    // Delete all permissions for the resource (this will also handle related role_permissions)
+    const deleted = await roleManagementService.deletePermissionsByResource(
+      resource
+    );
 
     res.json({
-      message: `Deleted ${permissions.length} permissions for resource: ${resource}`,
-      deletedCount: permissions.length,
+      message: `Deleted ${deleted.length} permissions for resource: ${resource}`,
+      deletedCount: deleted.length,
     });
   } catch (error: any) {
     res.status(500).json({

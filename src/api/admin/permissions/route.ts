@@ -1,6 +1,8 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 
+const ROLE_MANAGEMENT_MODULE = "roleManagementModuleService";
+
 // GET /admin/permissions - List all permissions
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
@@ -33,9 +35,28 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   }
 
   try {
+    const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
+
+    // Check if permission with same name already exists
+    const allPermissions = await roleManagementService.listPermissions({});
+    const existingPermission = allPermissions.find((p: any) => p.name === name);
+
+    if (existingPermission) {
+      return res.status(400).json({
+        message: "A permission with this name already exists",
+      });
+    }
+
+    const permission = await roleManagementService.createPermission({
+      name,
+      resource,
+      action,
+      description: description || "",
+    });
+
     res.status(201).json({
-      message: "Permission creation requires service implementation",
-      permission: { name, resource, action, description },
+      message: "Permission created successfully",
+      permission,
     });
   } catch (error: any) {
     res.status(500).json({

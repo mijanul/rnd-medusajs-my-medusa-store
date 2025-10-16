@@ -1,9 +1,9 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+
+const ROLE_MANAGEMENT_MODULE = "roleManagementModuleService";
 
 // POST /admin/roles/:id/permissions - Assign permissions to a role
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
-  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
   const { id } = req.params;
   const body = req.body as any;
   const { permission_ids } = body;
@@ -14,22 +14,36 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     });
   }
 
-  // Verify role exists
-  const { data: roles } = await query.graph({
-    entity: "role",
-    fields: ["id"],
-    filters: { id },
-  });
-
-  if (!roles || roles.length === 0) {
-    return res.status(404).json({ message: "Role not found" });
-  }
-
   try {
+    const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
+
+    // Verify role exists
+    const role = await roleManagementService.getRoleById(id);
+    if (!role) {
+      return res.status(404).json({ message: "Role not found" });
+    }
+
+    // Verify all permissions exist
+    for (const permId of permission_ids) {
+      const permission = await roleManagementService.getPermissionById(permId);
+      if (!permission) {
+        return res.status(404).json({
+          message: `Permission with id ${permId} not found`,
+        });
+      }
+    }
+
+    // Assign permissions to role
+    const assigned = await roleManagementService.assignPermissionsToRole(
+      id,
+      permission_ids
+    );
+
     res.status(201).json({
-      message: "Permission assignment requires service implementation",
+      message: "Permissions assigned successfully",
       role_id: id,
-      permission_ids,
+      assigned_count: assigned.length,
+      assignments: assigned,
     });
   } catch (error: any) {
     res.status(500).json({
@@ -52,10 +66,25 @@ export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
   }
 
   try {
+    const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
+
+    // Verify role exists
+    const role = await roleManagementService.getRoleById(id);
+    if (!role) {
+      return res.status(404).json({ message: "Role not found" });
+    }
+
+    // Remove permissions from role
+    const removed = await roleManagementService.removePermissionsFromRole(
+      id,
+      permission_ids
+    );
+
     res.json({
-      message: "Permission removal requires service implementation",
+      message: "Permissions removed successfully",
       role_id: id,
-      permission_ids,
+      removed_count: removed.length,
+      removals: removed,
     });
   } catch (error: any) {
     res.status(500).json({

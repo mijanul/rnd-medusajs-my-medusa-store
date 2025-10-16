@@ -1,6 +1,8 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 
+const ROLE_MANAGEMENT_MODULE = "roleManagementModuleService";
+
 // GET /admin/users/:id/roles - Get roles assigned to a user
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
@@ -43,10 +45,34 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   }
 
   try {
+    const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
+
+    // Verify all roles exist
+    for (const roleId of role_ids) {
+      const role = await roleManagementService.getRoleById(roleId);
+      if (!role) {
+        return res.status(404).json({
+          message: `Role with id ${roleId} not found`,
+        });
+      }
+      if (!role.is_active) {
+        return res.status(400).json({
+          message: `Role ${role.name} is not active`,
+        });
+      }
+    }
+
+    // Assign roles to user
+    const assigned = await roleManagementService.assignRolesToUser(
+      id,
+      role_ids
+    );
+
     res.status(201).json({
-      message: "Role assignment requires service implementation",
+      message: "Roles assigned successfully",
       user_id: id,
-      role_ids,
+      assigned_count: assigned.length,
+      assignments: assigned,
     });
   } catch (error: any) {
     res.status(500).json({
@@ -69,10 +95,19 @@ export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
   }
 
   try {
+    const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
+
+    // Remove roles from user
+    const removed = await roleManagementService.removeRolesFromUser(
+      id,
+      role_ids
+    );
+
     res.json({
-      message: "Role removal requires service implementation",
+      message: "Roles removed successfully",
       user_id: id,
-      role_ids,
+      removed_count: removed.length,
+      removals: removed,
     });
   } catch (error: any) {
     res.status(500).json({

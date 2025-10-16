@@ -7,101 +7,100 @@ import {
   Input,
   Label,
   Badge,
-  IconButton,
+  Checkbox,
 } from "@medusajs/ui";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, Trash } from "@medusajs/icons";
+import { ArrowLeft, InformationCircleSolid } from "@medusajs/icons";
 
-type Permission = {
-  id: string;
-  name: string;
-  resource: string;
+const STANDARD_ACTIONS = [
+  { action: "list", description: "View list of items", order: 1 },
+  { action: "view", description: "View item details", order: 2 },
+  { action: "create", description: "Create new items", order: 3 },
+  { action: "edit", description: "Edit existing items", order: 4 },
+  { action: "delete", description: "Delete items", order: 5 },
+];
+
+type ActionData = {
   action: string;
   description: string;
+  enabled: boolean;
+  isStandard: boolean;
 };
 
 const CreateResourcePage = () => {
   const navigate = useNavigate();
   const [resourceName, setResourceName] = useState("");
-  const [permissions, setPermissions] = useState<Permission[]>([
-    {
-      id: `temp-1`,
-      name: "",
-      resource: "",
-      action: "",
-      description: "",
-    },
-  ]);
+  const [resourceNameError, setResourceNameError] = useState("");
+  const [standardActions, setStandardActions] = useState<ActionData[]>(
+    STANDARD_ACTIONS.map((a) => ({
+      ...a,
+      enabled: true,
+      isStandard: true,
+    }))
+  );
   const [creating, setCreating] = useState(false);
+  const [touched, setTouched] = useState(false);
+
+  const validateResourceName = (name: string) => {
+    if (!name.trim()) {
+      setResourceNameError("Resource name is required");
+      return false;
+    }
+
+    const regex = /^[a-z0-9_-]+$/i;
+    if (!regex.test(name)) {
+      setResourceNameError(
+        "Resource name can only contain letters, numbers, hyphens, and underscores"
+      );
+      return false;
+    }
+
+    setResourceNameError("");
+    return true;
+  };
 
   const handleResourceNameChange = (value: string) => {
     setResourceName(value);
-    // Update all permission resource-management
-    setPermissions(
-      permissions.map((perm) => ({
-        ...perm,
-        resource: value,
-        name: value && perm.action ? `${value}-${perm.action}` : "",
-      }))
-    );
+    setTouched(true);
+    validateResourceName(value);
   };
 
-  const handleAddPermission = () => {
-    setPermissions([
-      ...permissions,
-      {
-        id: `temp-${Date.now()}`,
-        name: resourceName ? `${resourceName}-` : "",
-        resource: resourceName,
-        action: "",
-        description: "",
-      },
-    ]);
+  const handleStandardActionToggle = (index: number) => {
+    const updated = [...standardActions];
+    updated[index].enabled = !updated[index].enabled;
+    setStandardActions(updated);
   };
 
-  const handleRemovePermission = (index: number) => {
-    if (permissions.length === 1) {
-      toast.error("Resource must have at least one permission");
-      return;
-    }
-    const newPermissions = permissions.filter((_, i) => i !== index);
-    setPermissions(newPermissions);
-  };
-
-  const handlePermissionChange = (
+  const handleStandardDescriptionChange = (
     index: number,
-    field: keyof Permission,
-    value: string
+    description: string
   ) => {
-    const newPermissions = [...permissions];
-    newPermissions[index] = {
-      ...newPermissions[index],
-      [field]: value,
-    };
-
-    // Auto-update name when action changes
-    if (field === "action") {
-      newPermissions[index].name = resourceName
-        ? `${resourceName}-${value}`
-        : "";
-    }
-
-    setPermissions(newPermissions);
+    const updated = [...standardActions];
+    updated[index].description = description;
+    setStandardActions(updated);
   };
 
   const handleCreate = async () => {
-    // Validation
-    if (!resourceName.trim()) {
-      toast.error("Resource name is required");
+    if (!validateResourceName(resourceName)) {
       return;
     }
 
-    for (const perm of permissions) {
-      if (!perm.action.trim()) {
-        toast.error("All permissions must have an action");
-        return;
+    const actions: Array<{ action: string; description: string }> = [];
+
+    standardActions.forEach((a) => {
+      if (a.enabled) {
+        actions.push({
+          action: a.action,
+          description:
+            a.description || `${a.action} permission for ${resourceName}`,
+        });
       }
+    });
+
+    if (actions.length === 0) {
+      toast.error("At least one action must be enabled or added");
+      return;
     }
 
     setCreating(true);
@@ -114,13 +113,16 @@ const CreateResourcePage = () => {
         },
         credentials: "include",
         body: JSON.stringify({
-          resource: resourceName,
-          permissions,
+          resource: resourceName.trim(),
+          actions,
         }),
       });
 
       if (response.ok) {
-        toast.success(`Resource "${resourceName}" created successfully`);
+        const data = await response.json();
+        toast.success(
+          data.message || `Resource "${resourceName}" created successfully`
+        );
         navigate("/rbac-manager/resource-management");
       } else {
         const error = await response.json();
@@ -133,6 +135,8 @@ const CreateResourcePage = () => {
       setCreating(false);
     }
   };
+
+  const enabledCount = standardActions.filter((a) => a.enabled).length;
 
   return (
     <Container className="divide-y p-0">
@@ -149,126 +153,130 @@ const CreateResourcePage = () => {
 
         <div className="flex items-center justify-between">
           <div>
-            <Heading level="h1">Create New Permission Resource</Heading>
+            <Heading level="h1">Create New Resource</Heading>
             <p className="text-ui-fg-subtle mt-1 text-sm">
-              Define a new resource category and its permissions
+              Define a new resource and select the permissions users can have
+              for it
             </p>
           </div>
         </div>
       </div>
 
       <div className="px-6 py-6">
-        <div className="mb-6">
-          <Heading level="h2">Resource Details</Heading>
-          <div className="mt-4 max-w-md">
-            <Label htmlFor="resource-name" className="mb-2">
-              Resource Name *
+        <div className="mb-8">
+          <Heading level="h2" className="mb-4">
+            Resource Details
+          </Heading>
+          <div className="max-w-md">
+            <Label
+              htmlFor="resource-name"
+              className="mb-2 flex items-center gap-1"
+            >
+              Resource Name <span className="text-red-600">*</span>
             </Label>
             <Input
               id="resource-name"
               type="text"
               value={resourceName}
               onChange={(e) => handleResourceNameChange(e.target.value)}
+              onBlur={() => setTouched(true)}
               placeholder="e.g., product, blog, customer"
-              required
+              className={
+                resourceNameError && touched
+                  ? "border-red-600 focus:border-red-600"
+                  : ""
+              }
             />
-            <p className="text-ui-fg-subtle mt-2 text-sm">
-              Use lowercase, singular form (e.g., "product" not "Products")
+            {resourceNameError && touched && (
+              <p className="text-red-600 text-xs mt-1">{resourceNameError}</p>
+            )}
+            <p className="text-ui-fg-subtle mt-2 text-xs">
+              Use lowercase, singular form. Only letters, numbers, hyphens, and
+              underscores allowed.
             </p>
           </div>
         </div>
 
-        <div className="mb-6 flex items-center justify-between border-t pt-6">
-          <Heading level="h2">Permissions</Heading>
-          <Button
-            variant="secondary"
-            onClick={handleAddPermission}
-            size="small"
-            disabled={!resourceName.trim()}
-          >
-            <Plus />
-            Add Permission
-          </Button>
-        </div>
+        <div className="mb-8">
+          <div className="mb-4">
+            <Heading level="h2" className="mb-1">
+              Standard Permissions
+            </Heading>
+            <p className="text-ui-fg-subtle text-sm">
+              Select the standard CRUD operations for this resource. These are
+              industry-standard practices.
+            </p>
+          </div>
 
-        <div className="space-y-4">
-          {permissions.map((perm, index) => (
-            <div
-              key={perm.id}
-              className="grid grid-cols-12 gap-4 rounded-lg border p-4"
-            >
-              <div className="col-span-3">
-                <Label htmlFor={`action-${index}`} className="mb-2">
-                  Action *
-                </Label>
-                <Input
-                  id={`action-${index}`}
-                  type="text"
-                  value={perm.action}
-                  onChange={(e) =>
-                    handlePermissionChange(index, "action", e.target.value)
-                  }
-                  placeholder="e.g., view, add, edit"
-                  required
-                  disabled={!resourceName.trim()}
+          <div className="bg-ui-bg-subtle rounded-lg p-4 space-y-3">
+            {standardActions.map((action, index) => (
+              <div
+                key={action.action}
+                className="flex items-start gap-3 p-3 bg-ui-bg-base rounded-md"
+              >
+                <Checkbox
+                  id={`standard-${action.action}`}
+                  checked={action.enabled}
+                  onCheckedChange={() => handleStandardActionToggle(index)}
                 />
-              </div>
-
-              <div className="col-span-3">
-                <Label htmlFor={`name-${index}`} className="mb-2">
-                  Name (auto-generated)
-                </Label>
-                <Input
-                  id={`name-${index}`}
-                  type="text"
-                  value={perm.name}
-                  disabled
-                  className="bg-ui-bg-subtle"
-                />
-              </div>
-
-              <div className="col-span-5">
-                <Label htmlFor={`description-${index}`} className="mb-2">
-                  Description
-                </Label>
-                <Input
-                  id={`description-${index}`}
-                  type="text"
-                  value={perm.description}
-                  onChange={(e) =>
-                    handlePermissionChange(index, "description", e.target.value)
-                  }
-                  placeholder="Optional description"
-                  disabled={!resourceName.trim()}
-                />
-              </div>
-
-              <div className="col-span-1 flex items-end justify-center">
-                <IconButton
-                  variant="transparent"
-                  onClick={() => handleRemovePermission(index)}
-                  title="Remove permission"
-                  disabled={permissions.length === 1}
-                >
-                  <Trash
-                    className={
-                      permissions.length === 1
-                        ? "text-ui-fg-disabled"
-                        : "text-ui-fg-error"
+                <div className="flex-1">
+                  <Label
+                    htmlFor={`standard-${action.action}`}
+                    className="cursor-pointer font-medium capitalize mb-1"
+                  >
+                    {action.action}
+                  </Label>
+                  <Input
+                    type="text"
+                    value={action.description}
+                    onChange={(e) =>
+                      handleStandardDescriptionChange(index, e.target.value)
                     }
+                    placeholder={`Description for ${action.action}`}
+                    disabled={!action.enabled}
+                    className="mt-1 text-sm"
                   />
-                </IconButton>
+                </div>
+                <Badge
+                  size="small"
+                  color={action.enabled ? "green" : "grey"}
+                  className="mt-1"
+                >
+                  {action.enabled ? "Enabled" : "Disabled"}
+                </Badge>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-between border-t pt-6">
+        <div className="bg-ui-bg-subtle-hover rounded-lg p-4 mb-6 flex gap-3">
+          <InformationCircleSolid className="text-ui-fg-muted flex-shrink-0" />
+          <div>
+            <p className="text-sm font-medium mb-1">Best Practices</p>
+            <ul className="text-ui-fg-subtle text-xs space-y-1">
+              <li>
+                • Select the appropriate permissions for your resource type
+              </li>
+              <li>• Use all 5 standard permissions for full CRUD operations</li>
+              <li>• For read-only resources, select only "list" and "view"</li>
+              <li>
+                • Provide clear descriptions to help administrators understand
+                each permission
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between border-t pt-6">
           <div className="flex items-center gap-2">
             <Badge size="small" color="blue">
-              {permissions.length} permission
-              {permissions.length !== 1 ? "s" : ""}
+              {enabledCount} permission{enabledCount !== 1 ? "s" : ""} selected
             </Badge>
+            {resourceName && (
+              <Badge size="small" color="purple">
+                Resource: {resourceName}
+              </Badge>
+            )}
           </div>
           <div className="flex gap-2">
             <Button
@@ -281,42 +289,14 @@ const CreateResourcePage = () => {
               variant="primary"
               onClick={handleCreate}
               isLoading={creating}
-              disabled={!resourceName.trim() || permissions.length === 0}
+              disabled={
+                !resourceName.trim() ||
+                resourceNameError !== "" ||
+                enabledCount === 0
+              }
             >
               Create Resource
             </Button>
-          </div>
-        </div>
-
-        <div className="bg-ui-bg-subtle mt-6 rounded-lg p-4">
-          <Heading level="h3" className="mb-2">
-            💡 Common Actions
-          </Heading>
-          <p className="text-ui-fg-subtle mb-2 text-sm">
-            Here are some common permission actions you might want to add:
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Badge size="small" color="grey">
-              view
-            </Badge>
-            <Badge size="small" color="grey">
-              add
-            </Badge>
-            <Badge size="small" color="grey">
-              edit
-            </Badge>
-            <Badge size="small" color="grey">
-              delete
-            </Badge>
-            <Badge size="small" color="grey">
-              all
-            </Badge>
-            <Badge size="small" color="grey">
-              publish
-            </Badge>
-            <Badge size="small" color="grey">
-              manage
-            </Badge>
           </div>
         </div>
       </div>

@@ -31,42 +31,136 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
 export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
   const { resource } = req.params;
   const body = req.body as any;
-  const { permissions } = body;
+  const { actions = [] } = body;
 
-  if (!permissions || !Array.isArray(permissions)) {
+  if (!Array.isArray(actions)) {
     return res.status(400).json({
-      message: "Permissions array is required",
+      message: "Actions array is required",
+    });
+  }
+
+  if (actions.length === 0) {
+    return res.status(400).json({
+      message: "At least one action is required",
     });
   }
 
   try {
     const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
 
-    // Get existing permissions for this resource
+    // Check if resource exists
     const existingPermissions =
       await roleManagementService.getPermissionsByResource(resource);
 
-    // Delete all existing permissions for this resource
-    for (const perm of existingPermissions) {
+    if (existingPermissions.length === 0) {
+      return res.status(404).json({
+        message: `Resource "${resource}" not found`,
+      });
+    }
+
+    // Validate actions
+    const validActions = new Set(
+      actions.map((a: any) => a.action?.trim()).filter(Boolean)
+    );
+    if (validActions.size === 0) {
+      return res.status(400).json({
+        message: "All actions must have a valid action name",
+      });
+    }
+
+    // Check for duplicate actions
+    if (validActions.size !== actions.length) {
+      return res.status(400).json({
+        message: "Duplicate actions are not allowed",
+      });
+    }
+
+    // Map existing permissions by action for comparison
+    const existingMap = new Map(
+      existingPermissions.map((p: any) => [p.action, p])
+    );
+
+    const toDelete: any[] = [];
+    const toCreate: any[] = [];
+    const toUpdate: any[] = [];
+
+    // Determine what needs to be deleted
+    for (const existing of existingPermissions) {
+      if (!validActions.has(existing.action)) {
+        toDelete.push(existing);
+      }
+    }
+
+    // Determine what needs to be created or updated
+    for (const actionData of actions) {
+      const action = actionData.action?.trim();
+      if (!action) continue;
+
+      const existing = existingMap.get(action);
+      if (existing) {
+        // Check if description changed
+        if (
+          existing.description !==
+          (actionData.description || `${action} permission for ${resource}`)
+        ) {
+          toUpdate.push({
+            id: existing.id,
+            description:
+              actionData.description || `${action} permission for ${resource}`,
+          });
+        }
+      } else {
+        toCreate.push({
+          action,
+          description:
+            actionData.description || `${action} permission for ${resource}`,
+        });
+      }
+    }
+
+    // Execute changes
+    const results = {
+      deleted: 0,
+      created: 0,
+      updated: 0,
+    };
+
+    // Delete removed permissions
+    for (const perm of toDelete) {
       await roleManagementService.deletePermission(perm.id);
+      results.deleted++;
     }
 
     // Create new permissions
     const createdPermissions: any[] = [];
-    for (const perm of permissions) {
+    for (const permData of toCreate) {
       const created = await roleManagementService.createPermission({
-        name: `${resource}-${perm.action}`,
+        name: `${resource}:${permData.action}`,
         resource: resource,
-        action: perm.action,
-        description: perm.description || "",
+        action: permData.action,
+        description: permData.description,
       });
       createdPermissions.push(created);
+      results.created++;
     }
 
+    // Update existing permissions
+    for (const permData of toUpdate) {
+      await roleManagementService.updatePermission(permData.id, {
+        description: permData.description,
+      });
+      results.updated++;
+    }
+
+    // Get final state
+    const finalPermissions =
+      await roleManagementService.getPermissionsByResource(resource);
+
     res.json({
-      message: "Permissions updated successfully",
+      message: `Permissions updated successfully (${results.created} created, ${results.updated} updated, ${results.deleted} deleted)`,
       resource,
-      permissions: createdPermissions,
+      permissions: finalPermissions,
+      changes: results,
     });
   } catch (error: any) {
     res.status(500).json({

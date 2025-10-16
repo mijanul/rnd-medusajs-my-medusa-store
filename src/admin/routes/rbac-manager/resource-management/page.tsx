@@ -43,37 +43,19 @@ const ResourcesListPage = () => {
 
   const fetchResources = async () => {
     try {
-      const response = await fetch("/admin/permissions", {
+      const response = await fetch("/admin/permission-resource-management", {
         credentials: "include",
       });
 
       if (response.ok) {
         const data = await response.json();
-        const permissions = data.permissions || [];
-
-        // Group permissions by resource
-        const resourceMap = new Map<string, ResourceGroup>();
-
-        permissions.forEach((perm: Permission) => {
-          if (!resourceMap.has(perm.resource)) {
-            resourceMap.set(perm.resource, {
-              resource: perm.resource,
-              permissions: [],
-              permissionCount: 0,
-            });
-          }
-          const resourceData = resourceMap.get(perm.resource)!;
-          resourceData.permissions.push(perm);
-          resourceData.permissionCount = resourceData.permissions.length;
-        });
-
-        setResourceManagement(Array.from(resourceMap.values()));
+        setResourceManagement(data.resources || []);
       } else {
-        toast.error("Failed to load permissions");
+        toast.error("Failed to load resources");
       }
     } catch (error) {
-      console.error("Error fetching permissions:", error);
-      toast.error("Failed to load permissions");
+      console.error("Error fetching resources:", error);
+      toast.error("Failed to load resources");
     } finally {
       setLoading(false);
     }

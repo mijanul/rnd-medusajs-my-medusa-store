@@ -103,9 +103,22 @@ const EditResourcePage = () => {
       }
     }
 
+    // Check for duplicates
+    const actions = permissions.map((p) => p.action.toLowerCase());
+    const uniqueActions = new Set(actions);
+    if (actions.length !== uniqueActions.size) {
+      toast.error("Duplicate actions are not allowed");
+      return;
+    }
+
     setSaving(true);
 
     try {
+      const actions = permissions.map((p) => ({
+        action: p.action.trim(),
+        description: p.description || `${p.action} permission for ${resource}`,
+      }));
+
       const response = await fetch(
         `/admin/permission-resource-management/${resource}`,
         {
@@ -114,12 +127,13 @@ const EditResourcePage = () => {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify({ permissions }),
+          body: JSON.stringify({ actions }),
         }
       );
 
       if (response.ok) {
-        toast.success("Permissions updated successfully");
+        const data = await response.json();
+        toast.success(data.message || "Permissions updated successfully");
         navigate("/rbac-manager/resource-management");
       } else {
         const error = await response.json();

@@ -251,7 +251,7 @@ All pages use Medusa UI components:
 After running migrations, you'll have:
 
 - **4 Roles**: super-admin, admin, editor, viewer
-- **24 Permissions**: Covering all, page, product, order, user, role resources
+- **24 Permissions**: Covering all, page, product, order, user, role resource-management
 - **14 Role-Permission mappings**: Pre-configured for each role
 
 ## API Endpoints Used
@@ -306,7 +306,7 @@ All pages follow Medusa UI design system:
 
 ## Customization
 
-### Adding New Permission Resources
+### Adding New Permission Resource Management
 
 1. Create permissions via the Permissions page
 2. They will automatically appear in the role detail page grouped by resource

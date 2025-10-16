@@ -31,7 +31,9 @@ type ResourceGroup = {
 
 const ResourcesListPage = () => {
   const navigate = useNavigate();
-  const [resources, setResources] = useState<ResourceGroup[]>([]);
+  const [resourceManagement, setResourceManagement] = useState<ResourceGroup[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("");
 
@@ -65,7 +67,7 @@ const ResourcesListPage = () => {
           resourceData.permissionCount = resourceData.permissions.length;
         });
 
-        setResources(Array.from(resourceMap.values()));
+        setResourceManagement(Array.from(resourceMap.values()));
       } else {
         toast.error("Failed to load permissions");
       }
@@ -78,7 +80,7 @@ const ResourcesListPage = () => {
   };
 
   const handleEditResource = (resource: string) => {
-    navigate(`/rbac-manager/resources/${resource}`);
+    navigate(`/rbac-manager/resource-management/${resource}`);
   };
 
   const handleDeleteResource = async (resource: string) => {
@@ -91,10 +93,13 @@ const ResourcesListPage = () => {
     }
 
     try {
-      const response = await fetch(`/admin/permission-resources/${resource}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `/admin/permission-resource-management/${resource}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         toast.success(`Resource "${resource}" deleted successfully`);
@@ -110,10 +115,10 @@ const ResourcesListPage = () => {
   };
 
   const handleCreateResource = () => {
-    navigate("/rbac-manager/resources/create");
+    navigate("/rbac-manager/resource-management/create");
   };
 
-  const filteredResources = resources.filter((res) =>
+  const filteredResources = resourceManagement.filter((res) =>
     res.resource.toLowerCase().includes(filter.toLowerCase())
   );
 
@@ -121,7 +126,7 @@ const ResourcesListPage = () => {
     return (
       <Container>
         <div className="flex items-center justify-center py-12">
-          <p>Loading resources...</p>
+          <p>Loading Resource Management...</p>
         </div>
       </Container>
     );
@@ -131,7 +136,7 @@ const ResourcesListPage = () => {
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
         <div>
-          <Heading level="h1">Resources</Heading>
+          <Heading level="h1">Resource Management</Heading>
           <p className="text-ui-fg-subtle mt-1 text-sm">
             Manage permissions grouped by resource categories
           </p>
@@ -146,13 +151,12 @@ const ResourcesListPage = () => {
         <div className="mb-4">
           <Input
             type="text"
-            placeholder="Search resources..."
+            placeholder="Search Resource Management..."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           />
         </div>
-
-        {resources.length === 0 ? (
+        {resourceManagement.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
             <p className="text-ui-fg-subtle mb-4">
               No permission resources found
@@ -231,7 +235,7 @@ const ResourcesListPage = () => {
 };
 
 export const config = defineRouteConfig({
-  label: "Resources",
+  label: "Resource Management",
 });
 
 export default ResourcesListPage;

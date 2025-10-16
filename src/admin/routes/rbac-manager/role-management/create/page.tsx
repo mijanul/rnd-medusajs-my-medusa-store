@@ -39,7 +39,7 @@ const RoleCreatePage = () => {
 
       if (response.ok) {
         toast.success("Role created successfully");
-        navigate("/rbac-manager/roles-management");
+        navigate("/rbac-manager/role-management");
       } else {
         const error = await response.json();
         toast.error(error.message || "Failed to create role");
@@ -72,7 +72,7 @@ const RoleCreatePage = () => {
       <div className="flex items-center gap-4 px-6 py-4">
         <Button
           variant="transparent"
-          onClick={() => navigate("/rbac-manager/roles-management")}
+          onClick={() => navigate("/rbac-manager/role-management")}
           size="small"
         >
           <ArrowLeft />
@@ -183,7 +183,7 @@ const RoleCreatePage = () => {
           <Button
             type="button"
             variant="secondary"
-            onClick={() => navigate("/rbac-manager/roles-management")}
+            onClick={() => navigate("/rbac-manager/role-management")}
           >
             Cancel
           </Button>

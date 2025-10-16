@@ -16,7 +16,7 @@ Your permission management system has been **completely restructured** to organi
 
 ### After (New System)
 
-- List shows **resources** (categories): `Product`, `Page`, `Order`, etc.
+- List shows **resource-management** (categories): `Product`, `Page`, `Order`, etc.
 - Each resource contains multiple permissions
 - Actions (edit/delete) operate on the entire resource
 - Can manage all permissions for a resource at once
@@ -27,10 +27,10 @@ Your permission management system has been **completely restructured** to organi
 
 ### 1. **Main Permissions Page** (`/app/permissions`)
 
-- Shows all resources in a table
+- Shows all resource-management in a table
 - Displays permission count per resource
 - Preview of available actions
-- Edit or delete entire resources
+- Edit or delete entire resource-management
 - Search/filter functionality
 
 ### 2. **Create Resource Page** (`/app/permissions/create`)
@@ -53,15 +53,15 @@ Your permission management system has been **completely restructured** to organi
 
 ### Resource Management APIs
 
-1. **GET /admin/permission-resources**
-   - Lists all resources with their permissions
-2. **POST /admin/permission-resources**
+1. **GET /admin/permission-resource-management**
+   - Lists all resource-management with their permissions
+2. **POST /admin/permission-resource-management**
    - Creates a new resource with multiple permissions
-3. **GET /admin/permission-resources/:resource**
+3. **GET /admin/permission-resource-management/:resource**
    - Gets all permissions for a specific resource
-4. **PUT /admin/permission-resources/:resource**
+4. **PUT /admin/permission-resource-management/:resource**
    - Updates all permissions for a resource
-5. **DELETE /admin/permission-resources/:resource**
+5. **DELETE /admin/permission-resource-management/:resource**
    - Deletes a resource and all its permissions
 
 ---
@@ -82,8 +82,8 @@ src/admin/routes/permissions/
 ### API Routes (2 new route files)
 
 ```
-src/api/admin/permission-resources/
-├── route.ts                     # ✅ NEW - List/create resources
+src/api/admin/permission-resource-management/
+├── route.ts                     # ✅ NEW - List/create resource-management
 └── [resource]/
     └── route.ts                 # ✅ NEW - Get/update/delete resource
 ```
@@ -247,7 +247,7 @@ open http://localhost:9000/app/permissions
 - Try creating a "blog" or "customer" resource
 - Add multiple permissions
 
-### 3. Edit Existing Resources
+### 3. Edit Existing Resource Management
 
 - Click edit (✏️) on "Product" or "Page"
 - Try adding a new permission
@@ -255,7 +255,7 @@ open http://localhost:9000/app/permissions
 
 ### 4. Explore the UI
 
-- Search/filter resources
+- Search/filter resource-management
 - View permission previews
 - Check the permission count badges
 
@@ -263,7 +263,7 @@ open http://localhost:9000/app/permissions
 
 ## 💡 Use Cases
 
-### For New Resources
+### For New Resource Management
 
 Use "Create Resource" page to:
 
@@ -271,11 +271,11 @@ Use "Create Resource" page to:
 - Set up custom module permissions
 - Define admin panel sections
 
-### For Existing Resources
+### For Existing Resource Management
 
 Use "Edit Resource" page to:
 
-- Add new actions to existing resources
+- Add new actions to existing resource-management
 - Remove deprecated permissions
 - Update descriptions
 

@@ -301,7 +301,7 @@ psql $DATABASE_URL -c "SELECT * FROM role;"
 psql $DATABASE_URL -c "SELECT * FROM permission;"
 ```
 
-## 🎓 Learning Resources
+## 🎓 Learning Resource Management
 
 1. **ROLE_MANAGEMENT_GUIDE.md** - Full documentation
 2. **MIDDLEWARE_EXAMPLES.md** - Code examples

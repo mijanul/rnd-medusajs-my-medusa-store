@@ -2,7 +2,7 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 
 const ROLE_MANAGEMENT_MODULE = "roleManagementModuleService";
 
-// GET /admin/permission-resources/:resource - Get all permissions for a resource
+// GET /admin/permission-resource-management/:resource - Get all permissions for a resource
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const { resource } = req.params;
 
@@ -27,7 +27,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   }
 };
 
-// PUT /admin/permission-resources/:resource - Update all permissions for a resource
+// PUT /admin/permission-resource-management/:resource - Update all permissions for a resource
 export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
   const { resource } = req.params;
   const body = req.body as any;
@@ -78,7 +78,7 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
   }
 };
 
-// DELETE /admin/permission-resources/:resource - Delete all permissions for a resource
+// DELETE /admin/permission-resource-management/:resource - Delete all permissions for a resource
 export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
   const { resource } = req.params;
 

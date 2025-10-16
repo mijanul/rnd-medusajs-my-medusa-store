@@ -37,7 +37,7 @@ const CreateResourcePage = () => {
 
   const handleResourceNameChange = (value: string) => {
     setResourceName(value);
-    // Update all permission resources
+    // Update all permission resource-management
     setPermissions(
       permissions.map((perm) => ({
         ...perm,
@@ -107,7 +107,7 @@ const CreateResourcePage = () => {
     setCreating(true);
 
     try {
-      const response = await fetch("/admin/permission-resources", {
+      const response = await fetch("/admin/permission-resource-management", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -121,7 +121,7 @@ const CreateResourcePage = () => {
 
       if (response.ok) {
         toast.success(`Resource "${resourceName}" created successfully`);
-        navigate("/rbac-manager/resources");
+        navigate("/rbac-manager/resource-management");
       } else {
         const error = await response.json();
         toast.error(error.message || "Failed to create resource");
@@ -139,12 +139,12 @@ const CreateResourcePage = () => {
       <div className="px-6 py-4">
         <Button
           variant="transparent"
-          onClick={() => navigate("/rbac-manager/resources")}
+          onClick={() => navigate("/rbac-manager/resource-management")}
           className="mb-4"
           size="small"
         >
           <ArrowLeft />
-          Back to Resources
+          Back to Resource Management
         </Button>
 
         <div className="flex items-center justify-between">
@@ -273,7 +273,7 @@ const CreateResourcePage = () => {
           <div className="flex gap-2">
             <Button
               variant="secondary"
-              onClick={() => navigate("/rbac-manager/resources")}
+              onClick={() => navigate("/rbac-manager/resource-management")}
             >
               Cancel
             </Button>

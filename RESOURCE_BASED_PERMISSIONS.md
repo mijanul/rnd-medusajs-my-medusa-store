@@ -30,7 +30,7 @@ Resource List
 │   ├── view (Permission)
 │   ├── edit (Permission)
 │   └── all (Permission)
-└── ...more resources
+└── ...more resource-management
 ```
 
 ---
@@ -39,7 +39,7 @@ Resource List
 
 ### 1. **Main Permissions Page** (`/permissions`)
 
-Shows all permission resources in a table:
+Shows all permission resource-management in a table:
 
 | Resource    | Permissions   | Available Actions  | Actions |
 | ----------- | ------------- | ------------------ | ------- |
@@ -49,11 +49,11 @@ Shows all permission resources in a table:
 
 **Features:**
 
-- View all resources at a glance
+- View all resource-management at a glance
 - See permission count per resource
 - Quick preview of available actions
 - Edit or delete entire resource categories
-- Search/filter resources
+- Search/filter resource-management
 
 **Actions:**
 
@@ -115,7 +115,7 @@ Edit all permissions for a specific resource:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│ ← Back to Resources                                 │
+│ ← Back to Resource Management                                 │
 │                                                     │
 │ Edit Product Permissions                            │
 │ Manage actions available for the product resource   │
@@ -159,17 +159,17 @@ Edit all permissions for a specific resource:
 
 ### New Endpoints
 
-#### 1. **Get All Resources**
+#### 1. **Get All Resource Management**
 
 ```http
-GET /admin/permission-resources
+GET /admin/permission-resource-management
 ```
 
 **Response:**
 
 ```json
 {
-  "resources": [
+  "resource-management": [
     {
       "resource": "product",
       "permissions": [...],
@@ -182,7 +182,7 @@ GET /admin/permission-resources
 #### 2. **Get Resource Permissions**
 
 ```http
-GET /admin/permission-resources/:resource
+GET /admin/permission-resource-management/:resource
 ```
 
 **Response:**
@@ -205,7 +205,7 @@ GET /admin/permission-resources/:resource
 #### 3. **Create Resource with Permissions**
 
 ```http
-POST /admin/permission-resources
+POST /admin/permission-resource-management
 ```
 
 **Request Body:**
@@ -229,7 +229,7 @@ POST /admin/permission-resources
 #### 4. **Update Resource Permissions**
 
 ```http
-PUT /admin/permission-resources/:resource
+PUT /admin/permission-resource-management/:resource
 ```
 
 **Request Body:**
@@ -249,7 +249,7 @@ PUT /admin/permission-resources/:resource
 #### 5. **Delete Resource**
 
 ```http
-DELETE /admin/permission-resources/:resource
+DELETE /admin/permission-resource-management/:resource
 ```
 
 Deletes all permissions associated with the resource.
@@ -284,8 +284,8 @@ src/
         │   ├── route.ts                    # Individual permissions (existing)
         │   └── [id]/
         │       └── route.ts
-        └── permission-resources/           # NEW
-            ├── route.ts                    # List/create resources
+        └── permission-resource-management/           # NEW
+            ├── route.ts                    # List/create resource-management
             └── [resource]/
                 └── route.ts                # Get/update/delete resource
 
@@ -358,7 +358,7 @@ Result: 4 permissions created:
 
 ### ✅ Scalability
 
-- Easy to add new resources
+- Easy to add new resource-management
 - Clear pattern to follow
 - Maintainable as system grows
 
@@ -383,7 +383,7 @@ The new system is **backward compatible**:
 
 ## 🚀 Quick Start
 
-### View Resources
+### View Resource Management
 
 ```
 http://localhost:9000/app/permissions
@@ -430,8 +430,8 @@ http://localhost:9000/app/permissions/product
 1. **Use "all" action** for full access to a resource
 2. **Add descriptions** to make permissions self-documenting
 3. **Start with common actions** (view, add, edit, delete)
-4. **Group related resources** with similar naming (e.g., `blog`, `blog-category`)
-5. **Delete unused resources** to keep the system clean
+4. **Group related resource-management** with similar naming (e.g., `blog`, `blog-category`)
+5. **Delete unused resource-management** to keep the system clean
 
 ---
 

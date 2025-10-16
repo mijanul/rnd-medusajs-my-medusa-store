@@ -11,12 +11,12 @@ Successfully migrated the Role Management and Permissions UI from separate menu 
 ```
 /admin/routes/rbac-manager/
 ├── page.tsx                              # Landing page with two cards
-├── roles-management/
+├── role-management/
 │   ├── page.tsx                         # List all roles
 │   ├── create/page.tsx                  # Create new role
 │   └── [id]/page.tsx                    # Edit role
-└── resources/
-    ├── page.tsx                         # List all resources/permissions
+└── resource-management/
+    ├── page.tsx                         # List all resourceManagement/permissions
     ├── create/page.tsx                  # Create new resource
     └── [resource]/page.tsx              # Edit resource
 ```
@@ -30,12 +30,12 @@ Successfully migrated the Role Management and Permissions UI from separate menu 
 
 All internal navigation has been updated from:
 
-- `/roles` → `/rbac-manager/roles-management`
-- `/roles/create` → `/rbac-manager/roles-management/create`
-- `/roles/{id}` → `/rbac-manager/roles-management/{id}`
-- `/permissions` → `/rbac-manager/resources`
-- `/permissions/create` → `/rbac-manager/resources/create`
-- `/permissions/{resource}` → `/rbac-manager/resources/{resource}`
+- `/roles` → `/rbac-manager/role-management`
+- `/roles/create` → `/rbac-manager/role-management/create`
+- `/roles/{id}` → `/rbac-manager/role-management/{id}`
+- `/permissions` → `/rbac-manager/resource-management`
+- `/permissions/create` → `/rbac-manager/resource-management/create`
+- `/permissions/{resource}` → `/rbac-manager/resource-management/{resource}`
 
 ### 4. Updated Widgets
 
@@ -48,20 +48,20 @@ All internal navigation has been updated from:
 1. **RBAC Manager** (top-level menu item with shield icon)
    - Clicking opens a landing page
    - Two cards are displayed:
-     - **Roles Management** - Create and manage user roles
-     - **Resources** - Define permission resources
+     - **Role Management** - Create and manage user roles
+   - **Resource Management** - Define permission Resource Management
 
 ### Navigation Flow
 
 ```
 Extensions Menu
 └── RBAC Manager 🛡️
-    ├── Roles Management
+    ├── Role Management
     │   ├── List Roles
     │   ├── Create Role
     │   └── Edit Role
-    └── Resources
-        ├── List Resources
+    └── Resource Management
+        ├── List Resource Management
         ├── Create Resource
         └── Edit Resource
 ```
@@ -77,12 +77,12 @@ Extensions Menu
 
 - [ ] RBAC Manager appears in extensions menu
 - [ ] Landing page displays with two cards
-- [ ] Roles Management shows all roles
+- [ ] Role Management shows all roles
 - [ ] Can create new roles
 - [ ] Can edit existing roles
-- [ ] Resources shows all permission resources
-- [ ] Can create new resources
-- [ ] Can edit existing resources
+- [ ] Resource Management shows all permission resources
+- [ ] Can create new resource
+- [ ] Can edit existing resource
 - [ ] Widget links navigate correctly
 - [ ] All API calls work properly
 

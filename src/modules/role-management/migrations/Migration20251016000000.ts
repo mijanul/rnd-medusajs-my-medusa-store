@@ -82,9 +82,9 @@ export class Migration20251016000000 extends Migration {
       INSERT INTO "role" ("id", "name", "slug", "description", "is_active", "created_at", "updated_at")
       VALUES
         ('role_super_admin', 'Super Admin', 'super-admin', 'Full system access with all permissions', true, now(), now()),
-        ('role_admin', 'Admin', 'admin', 'Administrative access to manage most resources', true, now(), now()),
-        ('role_editor', 'Editor', 'editor', 'Can manage content and basic resources', true, now(), now()),
-        ('role_viewer', 'Viewer', 'viewer', 'Read-only access to view resources', true, now(), now());
+  ('role_admin', 'Admin', 'admin', 'Administrative access to manage most resources', true, now(), now()),
+  ('role_editor', 'Editor', 'editor', 'Can manage content and basic resources', true, now(), now()),
+  ('role_viewer', 'Viewer', 'viewer', 'Read-only access to view resources', true, now(), now());
     `);
 
     // Insert default permissions
@@ -92,7 +92,7 @@ export class Migration20251016000000 extends Migration {
       INSERT INTO "permission" ("id", "name", "resource", "action", "description", "created_at", "updated_at")
       VALUES
         -- All permissions
-        ('perm_all_all', 'all-all', 'all', 'all', 'Full access to all resources and actions', now(), now()),
+  ('perm_all_all', 'all-all', 'all', 'all', 'Full access to all resources and actions', now(), now()),
         
         -- Page permissions
         ('perm_page_view', 'page-view', 'page', 'view', 'View pages', now(), now()),

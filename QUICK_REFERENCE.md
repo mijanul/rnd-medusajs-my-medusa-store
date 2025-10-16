@@ -13,7 +13,7 @@
 
 `{resource}-{action}`
 
-**Resources**: all, page, product, order, user, role
+**Resource Management**: all, page, product, order, user, role
 **Actions**: all, view, add, edit, delete
 
 **Examples**: `page-edit`, `product-all`, `all-all`

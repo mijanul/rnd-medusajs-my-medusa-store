@@ -81,7 +81,7 @@ The system comes with 4 pre-configured roles:
   - `user-view`: View users
   - `user-edit`: Edit users
   - `role-view`: View roles
-- **Description**: Administrative access to manage most resources
+- **Description**: Administrative access to manage most resource-management
 - **Use Case**: Store administrators who manage day-to-day operations
 
 ### 3. Editor (`editor`)
@@ -92,7 +92,7 @@ The system comes with 4 pre-configured roles:
   - `product-view`: View products
   - `product-edit`: Edit products
   - `order-view`: View orders
-- **Description**: Can manage content and basic resources
+- **Description**: Can manage content and basic resource-management
 - **Use Case**: Content managers who edit pages and products
 
 ### 4. Viewer (`viewer`)
@@ -102,16 +102,16 @@ The system comes with 4 pre-configured roles:
   - `page-view`: View pages
   - `product-view`: View products
   - `order-view`: View orders
-- **Description**: Read-only access to view resources
+- **Description**: Read-only access to view resource-management
 - **Use Case**: Users who need to view data without making changes
 
 ## Permission Naming Convention
 
 Permissions follow the `{resource}-{action}` pattern:
 
-### Resources
+### Resource Management
 
-- `all`: All resources
+- `all`: All resource-management
 - `page`: Content pages
 - `product`: Products
 - `order`: Orders
@@ -315,7 +315,7 @@ The system is set up through a migration file that:
 
 1. Creates all 4 tables (role, permission, role_permission, user_role)
 2. Inserts default roles (super-admin, admin, editor, viewer)
-3. Inserts default permissions for common resources
+3. Inserts default permissions for common resource-management
 4. Assigns appropriate permissions to each role
 
 To apply the migration:

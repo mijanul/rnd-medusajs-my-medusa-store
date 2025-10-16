@@ -2,7 +2,7 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 
 const ROLE_MANAGEMENT_MODULE = "roleManagementModuleService";
 
-// GET /admin/permission-resources - List all unique resources with their permissions
+// GET /admin/permission-resource-management - List all unique resourceManagement with their permissions
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
@@ -26,18 +26,18 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
       resourceData.permissionCount = resourceData.permissions.length;
     });
 
-    const resources = Array.from(resourceMap.values());
+    const resourceManagement = Array.from(resourceMap.values());
 
-    res.json({ resources });
+    res.json({ resourceManagement });
   } catch (error: any) {
     res.status(500).json({
-      message: "Failed to fetch resources",
+      message: "Failed to fetch resourceManagement",
       error: error.message,
     });
   }
 };
 
-// POST /admin/permission-resources - Create a new resource with permissions
+// POST /admin/permission-resource-management - Create a new resource with permissions
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   const body = req.body as any;
   const { resource, permissions } = body;

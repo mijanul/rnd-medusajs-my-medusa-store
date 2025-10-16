@@ -79,10 +79,10 @@ const RolesListPage = () => {
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h1">Roles Management</Heading>
+        <Heading level="h1">Role Management</Heading>
         <Button
           variant="primary"
-          onClick={() => navigate("/rbac-manager/roles-management/create")}
+          onClick={() => navigate("/rbac-manager/role-management/create")}
           size="small"
         >
           <Plus />
@@ -96,7 +96,7 @@ const RolesListPage = () => {
             <p className="text-ui-fg-subtle mb-4">No roles found</p>
             <Button
               variant="secondary"
-              onClick={() => navigate("/rbac-manager/roles-management/create")}
+              onClick={() => navigate("/rbac-manager/role-management/create")}
             >
               Create your first role
             </Button>
@@ -120,7 +120,7 @@ const RolesListPage = () => {
                   key={role.id}
                   className="cursor-pointer hover:bg-ui-bg-subtle-hover"
                   onClick={() =>
-                    navigate(`/rbac-manager/roles-management/${role.id}`)
+                    navigate(`/rbac-manager/role-management/${role.id}`)
                   }
                 >
                   <Table.Cell>
@@ -151,7 +151,7 @@ const RolesListPage = () => {
                         size="small"
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/rbac-manager/roles-management/${role.id}`);
+                          navigate(`/rbac-manager/role-management/${role.id}`);
                         }}
                       >
                         <PencilSquare />
@@ -179,7 +179,7 @@ const RolesListPage = () => {
 };
 
 export const config = defineRouteConfig({
-  label: "Roles Management",
+  label: "Role Management",
 });
 
 export default RolesListPage;

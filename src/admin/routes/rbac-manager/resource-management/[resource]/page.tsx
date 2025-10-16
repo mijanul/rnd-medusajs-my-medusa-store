@@ -36,9 +36,12 @@ const EditResourcePage = () => {
 
   const fetchPermissions = async () => {
     try {
-      const response = await fetch(`/admin/permission-resources/${resource}`, {
-        credentials: "include",
-      });
+      const response = await fetch(
+        `/admin/permission-resource-management/${resource}`,
+        {
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -103,18 +106,21 @@ const EditResourcePage = () => {
     setSaving(true);
 
     try {
-      const response = await fetch(`/admin/permission-resources/${resource}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ permissions }),
-      });
+      const response = await fetch(
+        `/admin/permission-resource-management/${resource}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ permissions }),
+        }
+      );
 
       if (response.ok) {
         toast.success("Permissions updated successfully");
-        navigate("/rbac-manager/resources");
+        navigate("/rbac-manager/resource-management");
       } else {
         const error = await response.json();
         toast.error(error.message || "Failed to update permissions");
@@ -142,12 +148,12 @@ const EditResourcePage = () => {
       <div className="px-6 py-4">
         <Button
           variant="transparent"
-          onClick={() => navigate("/rbac-manager/resources")}
+          onClick={() => navigate("/rbac-manager/resource-management")}
           className="mb-4"
           size="small"
         >
           <ArrowLeft />
-          Back to Resources
+          Back to Resource Management
         </Button>
 
         <div className="flex items-center justify-between">
@@ -263,7 +269,7 @@ const EditResourcePage = () => {
             <div className="flex gap-2">
               <Button
                 variant="secondary"
-                onClick={() => navigate("/rbac-manager/resources")}
+                onClick={() => navigate("/rbac-manager/resource-management")}
               >
                 Cancel
               </Button>

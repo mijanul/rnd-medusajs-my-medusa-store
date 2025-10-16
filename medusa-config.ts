@@ -17,5 +17,8 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/page",
     },
+    {
+      resolve: "./src/modules/role-management",
+    },
   ],
 });

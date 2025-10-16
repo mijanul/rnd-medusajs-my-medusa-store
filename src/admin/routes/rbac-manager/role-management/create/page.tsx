@@ -10,21 +10,45 @@ import {
   toast,
 } from "@medusajs/ui";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "@medusajs/icons";
 
 const RoleCreatePage = () => {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    slug: "",
-    description: "",
-    is_active: true,
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, touchedFields, dirtyFields },
+    setValue,
+    getValues,
+  } = useForm({
+    defaultValues: {
+      name: "",
+      slug: "",
+      description: "",
+      is_active: true,
+    },
+    mode: "onTouched",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  };
+
+  const handleNameChange = (value: string) => {
+    setValue("name", value, { shouldDirty: true, shouldTouch: true });
+    if (!getValues("slug")) {
+      setValue("slug", generateSlug(value), { shouldDirty: true });
+    }
+  };
+
+  const onSubmit = async (data: any) => {
     setSaving(true);
 
     try {
@@ -34,7 +58,7 @@ const RoleCreatePage = () => {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(data),
       });
 
       if (response.ok) {
@@ -52,21 +76,6 @@ const RoleCreatePage = () => {
     }
   };
 
-  const generateSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-  };
-
-  const handleNameChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      name: value,
-      slug: prev.slug || generateSlug(value),
-    }));
-  };
-
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center gap-4 px-6 py-4">
@@ -80,38 +89,58 @@ const RoleCreatePage = () => {
         <Heading level="h1">Create Role</Heading>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 px-6 py-8">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-6 px-6 py-8"
+      >
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Left Column */}
           <div className="flex flex-col gap-6">
             <div>
-              <Label htmlFor="name" className="mb-2">
-                Name *
+              <Label htmlFor="name" className="mb-2 flex items-center gap-1">
+                Name <span className="text-red-600">*</span>
               </Label>
               <Input
                 id="name"
                 type="text"
-                value={formData.name}
-                onChange={(e) => handleNameChange(e.target.value)}
-                required
                 placeholder="e.g., Content Manager"
+                {...register("name", {
+                  required: "Name is required",
+                  onChange: (e) => handleNameChange(e.target.value),
+                })}
+                className={
+                  errors.name && (touchedFields.name || dirtyFields.name)
+                    ? "border-red-600 focus:border-red-600"
+                    : ""
+                }
               />
+              {errors.name && (touchedFields.name || dirtyFields.name) && (
+                <span className="text-red-600 text-xs mt-1 block">
+                  {errors.name.message}
+                </span>
+              )}
             </div>
 
             <div>
-              <Label htmlFor="slug" className="mb-2">
-                Slug *
+              <Label htmlFor="slug" className="mb-2 flex items-center gap-1">
+                Slug <span className="text-red-600">*</span>
               </Label>
               <Input
                 id="slug"
                 type="text"
-                value={formData.slug}
-                onChange={(e) =>
-                  setFormData({ ...formData, slug: e.target.value })
-                }
-                required
                 placeholder="e.g., content-manager"
+                {...register("slug", { required: "Slug is required" })}
+                className={
+                  errors.slug && (touchedFields.slug || dirtyFields.slug)
+                    ? "border-red-600 focus:border-red-600"
+                    : ""
+                }
               />
+              {errors.slug && (touchedFields.slug || dirtyFields.slug) && (
+                <span className="text-red-600 text-xs mt-1 block">
+                  {errors.slug.message}
+                </span>
+              )}
               <p className="text-ui-fg-subtle mt-1 text-sm">
                 URL-friendly identifier for the role
               </p>
@@ -123,12 +152,9 @@ const RoleCreatePage = () => {
               </Label>
               <Textarea
                 id="description"
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
                 rows={6}
                 placeholder="Describe the purpose of this role..."
+                {...register("description")}
               />
             </div>
           </div>
@@ -147,10 +173,8 @@ const RoleCreatePage = () => {
                 </div>
                 <Switch
                   id="is_active"
-                  checked={formData.is_active}
-                  onCheckedChange={(checked) =>
-                    setFormData({ ...formData, is_active: checked })
-                  }
+                  checked={getValues("is_active")}
+                  onCheckedChange={(checked) => setValue("is_active", checked)}
                 />
               </div>
             </div>

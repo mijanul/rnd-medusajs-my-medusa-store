@@ -11,6 +11,7 @@ import {
   Checkbox,
 } from "@medusajs/ui";
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "@medusajs/icons";
 
@@ -40,11 +41,22 @@ const RoleDetailPage = () => {
   const [selectedPermissionIds, setSelectedPermissionIds] = useState<
     Set<string>
   >(new Set());
-  const [formData, setFormData] = useState({
-    name: "",
-    slug: "",
-    description: "",
-    is_active: true,
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, dirtyFields, touchedFields },
+    setValue,
+    getValues,
+    reset,
+  } = useForm({
+    defaultValues: {
+      name: "",
+      slug: "",
+      description: "",
+      is_active: true,
+    },
+    mode: "onTouched",
   });
 
   useEffect(() => {
@@ -61,7 +73,7 @@ const RoleDetailPage = () => {
       if (response.ok) {
         const data = await response.json();
         setRole(data.role);
-        setFormData({
+        reset({
           name: data.role.name,
           slug: data.role.slug,
           description: data.role.description || "",
@@ -100,10 +112,8 @@ const RoleDetailPage = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: any) => {
     setSaving(true);
-
     try {
       const response = await fetch(`/admin/roles/${id}`, {
         method: "PUT",
@@ -111,7 +121,7 @@ const RoleDetailPage = () => {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(data),
       });
 
       if (response.ok) {
@@ -203,42 +213,55 @@ const RoleDetailPage = () => {
 
       <div className="flex flex-col gap-8 px-6 py-8">
         {/* Role Details Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <div>
             <Heading level="h2" className="mb-4">
               Role Details
             </Heading>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <div>
-                <Label htmlFor="name" className="mb-2">
-                  Name *
+                <Label htmlFor="name" className="mb-2 flex items-center gap-1">
+                  Name <span className="text-red-600">*</span>
                 </Label>
                 <Input
                   id="name"
                   type="text"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  required
                   placeholder="e.g., Content Manager"
+                  {...register("name", { required: "Name is required" })}
+                  className={
+                    errors.name && (touchedFields.name || dirtyFields.name)
+                      ? "border-red-600 focus:border-red-600"
+                      : ""
+                  }
                 />
+                {errors.name && (touchedFields.name || dirtyFields.name) && (
+                  <span className="text-red-600 text-xs mt-1 block">
+                    {errors.name.message}
+                  </span>
+                )}
               </div>
 
               <div>
-                <Label htmlFor="slug" className="mb-2">
-                  Slug *
+                <Label htmlFor="slug" className="mb-2 flex items-center gap-1">
+                  Slug <span className="text-red-600">*</span>
                 </Label>
                 <Input
                   id="slug"
                   type="text"
-                  value={formData.slug}
-                  onChange={(e) =>
-                    setFormData({ ...formData, slug: e.target.value })
-                  }
-                  required
                   placeholder="e.g., content-manager"
+                  {...register("slug", { required: "Slug is required" })}
+                  className={
+                    errors.slug && (touchedFields.slug || dirtyFields.slug)
+                      ? "border-red-600 focus:border-red-600"
+                      : ""
+                  }
                 />
+                {errors.slug && (touchedFields.slug || dirtyFields.slug) && (
+                  <span className="text-red-600 text-xs mt-1 block">
+                    {errors.slug.message}
+                  </span>
+                )}
               </div>
 
               <div className="lg:col-span-2">
@@ -247,12 +270,9 @@ const RoleDetailPage = () => {
                 </Label>
                 <Textarea
                   id="description"
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
                   rows={3}
                   placeholder="Describe this role..."
+                  {...register("description")}
                 />
               </div>
 
@@ -268,9 +288,9 @@ const RoleDetailPage = () => {
                   </div>
                   <Switch
                     id="is_active"
-                    checked={formData.is_active}
+                    checked={getValues("is_active")}
                     onCheckedChange={(checked) =>
-                      setFormData({ ...formData, is_active: checked })
+                      setValue("is_active", checked)
                     }
                   />
                 </div>

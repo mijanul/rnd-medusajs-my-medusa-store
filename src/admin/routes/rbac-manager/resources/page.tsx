@@ -29,7 +29,7 @@ type ResourceGroup = {
   permissionCount: number;
 };
 
-const PermissionsListPage = () => {
+const ResourcesListPage = () => {
   const navigate = useNavigate();
   const [resources, setResources] = useState<ResourceGroup[]>([]);
   const [loading, setLoading] = useState(true);
@@ -78,7 +78,7 @@ const PermissionsListPage = () => {
   };
 
   const handleEditResource = (resource: string) => {
-    navigate(`/permissions/${resource}`);
+    navigate(`/rbac-manager/resources/${resource}`);
   };
 
   const handleDeleteResource = async (resource: string) => {
@@ -110,7 +110,7 @@ const PermissionsListPage = () => {
   };
 
   const handleCreateResource = () => {
-    navigate("/permissions/create");
+    navigate("/rbac-manager/resources/create");
   };
 
   const filteredResources = resources.filter((res) =>
@@ -121,7 +121,7 @@ const PermissionsListPage = () => {
     return (
       <Container>
         <div className="flex items-center justify-center py-12">
-          <p>Loading permissions...</p>
+          <p>Loading resources...</p>
         </div>
       </Container>
     );
@@ -131,7 +131,7 @@ const PermissionsListPage = () => {
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
         <div>
-          <Heading level="h1">Permission Resources</Heading>
+          <Heading level="h1">Resources</Heading>
           <p className="text-ui-fg-subtle mt-1 text-sm">
             Manage permissions grouped by resource categories
           </p>
@@ -231,7 +231,7 @@ const PermissionsListPage = () => {
 };
 
 export const config = defineRouteConfig({
-  label: "Permissions",
+  label: "Resources",
 });
 
-export default PermissionsListPage;
+export default ResourcesListPage;

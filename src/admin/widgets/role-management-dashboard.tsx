@@ -66,7 +66,7 @@ const RoleManagementWidget = () => {
 
       <div className="grid grid-cols-1 gap-4 px-6 py-4 md:grid-cols-3">
         <button
-          onClick={() => navigate("/roles")}
+          onClick={() => navigate("/rbac-manager/roles-management")}
           className="border-ui-border-base hover:bg-ui-bg-subtle-hover flex flex-col gap-2 rounded-lg border p-4 text-left transition-colors"
         >
           <div className="flex items-center gap-2">
@@ -84,7 +84,7 @@ const RoleManagementWidget = () => {
         </button>
 
         <button
-          onClick={() => navigate("/permissions")}
+          onClick={() => navigate("/rbac-manager/resources")}
           className="border-ui-border-base hover:bg-ui-bg-subtle-hover flex flex-col gap-2 rounded-lg border p-4 text-left transition-colors"
         >
           <div className="flex items-center gap-2">

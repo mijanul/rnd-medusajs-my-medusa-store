@@ -1,27 +1,19 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+
+const ROLE_MANAGEMENT_MODULE = "roleManagementModuleService";
 
 // GET /admin/permission-resources/:resource - Get all permissions for a resource
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const { resource } = req.params;
-  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
   try {
-    const { data: permissions } = await query.graph({
-      entity: "permission",
-      fields: [
-        "id",
-        "name",
-        "resource",
-        "action",
-        "description",
-        "created_at",
-        "updated_at",
-      ],
-      filters: {
-        resource: resource,
-      },
-    });
+    const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
+
+    // Get all permissions and filter by resource
+    const allPermissions = await roleManagementService.listPermissions({});
+    const permissions = allPermissions.filter(
+      (p: any) => p.resource === resource
+    );
 
     res.json({
       resource,
@@ -48,11 +40,35 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
   }
 
   try {
-    // This would update/create multiple permissions for the resource
+    const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
+
+    // Get existing permissions for this resource
+    const allPermissions = await roleManagementService.listPermissions({});
+    const existingPermissions = allPermissions.filter(
+      (p: any) => p.resource === resource
+    );
+
+    // Delete all existing permissions for this resource
+    for (const perm of existingPermissions) {
+      await roleManagementService.deletePermissions(perm.id);
+    }
+
+    // Create new permissions
+    const createdPermissions: any[] = [];
+    for (const perm of permissions) {
+      const created = await roleManagementService.createPermissions({
+        name: `${resource}-${perm.action}`,
+        resource: resource,
+        action: perm.action,
+        description: perm.description || "",
+      });
+      createdPermissions.push(created);
+    }
+
     res.json({
       message: "Permissions updated successfully",
       resource,
-      permissions,
+      permissions: createdPermissions,
     });
   } catch (error: any) {
     res.status(500).json({
@@ -65,19 +81,21 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
 // DELETE /admin/permission-resources/:resource - Delete all permissions for a resource
 export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
   const { resource } = req.params;
-  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
   try {
-    // First get all permissions for this resource
-    const { data: permissions } = await query.graph({
-      entity: "permission",
-      fields: ["id"],
-      filters: {
-        resource: resource,
-      },
-    });
+    const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
 
-    // This would delete all permissions for the resource
+    // First get all permissions for this resource
+    const allPermissions = await roleManagementService.listPermissions({});
+    const permissions = allPermissions.filter(
+      (p: any) => p.resource === resource
+    );
+
+    // Delete all permissions for the resource
+    for (const perm of permissions) {
+      await roleManagementService.deletePermissions(perm.id);
+    }
+
     res.json({
       message: `Deleted ${permissions.length} permissions for resource: ${resource}`,
       deletedCount: permissions.length,

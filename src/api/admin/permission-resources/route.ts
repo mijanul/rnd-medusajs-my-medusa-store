@@ -1,23 +1,14 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+
+const ROLE_MANAGEMENT_MODULE = "roleManagementModuleService";
 
 // GET /admin/permission-resources - List all unique resources with their permissions
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
-  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
-
   try {
-    const { data: permissions } = await query.graph({
-      entity: "permission",
-      fields: [
-        "id",
-        "name",
-        "resource",
-        "action",
-        "description",
-        "created_at",
-        "updated_at",
-      ],
-    });
+    const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
+
+    // Get all permissions
+    const permissions = await roleManagementService.listPermissions({});
 
     // Group permissions by resource
     const resourceMap = new Map<string, any>();
@@ -58,11 +49,24 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   }
 
   try {
-    // This would create multiple permissions at once
-    // For now, returning placeholder response
+    const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
+
+    // Create each permission
+    const createdPermissions: any[] = [];
+    for (const perm of permissions) {
+      const created = await roleManagementService.createPermissions({
+        name: `${resource}-${perm.action}`,
+        resource: resource,
+        action: perm.action,
+        description: perm.description || "",
+      });
+      createdPermissions.push(created);
+    }
+
     res.status(201).json({
-      message: "Resource creation requires service implementation",
-      resource: { resource, permissions },
+      message: "Resource created successfully",
+      resource: resource,
+      permissions: createdPermissions,
     });
   } catch (error: any) {
     res.status(500).json({

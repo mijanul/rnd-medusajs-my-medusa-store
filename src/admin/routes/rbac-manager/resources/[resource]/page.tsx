@@ -114,7 +114,7 @@ const EditResourcePage = () => {
 
       if (response.ok) {
         toast.success("Permissions updated successfully");
-        navigate("/permissions");
+        navigate("/rbac-manager/resources");
       } else {
         const error = await response.json();
         toast.error(error.message || "Failed to update permissions");
@@ -142,7 +142,7 @@ const EditResourcePage = () => {
       <div className="px-6 py-4">
         <Button
           variant="transparent"
-          onClick={() => navigate("/permissions")}
+          onClick={() => navigate("/rbac-manager/resources")}
           className="mb-4"
           size="small"
         >
@@ -263,7 +263,7 @@ const EditResourcePage = () => {
             <div className="flex gap-2">
               <Button
                 variant="secondary"
-                onClick={() => navigate("/permissions")}
+                onClick={() => navigate("/rbac-manager/resources")}
               >
                 Cancel
               </Button>

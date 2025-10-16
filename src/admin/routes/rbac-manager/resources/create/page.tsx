@@ -121,7 +121,7 @@ const CreateResourcePage = () => {
 
       if (response.ok) {
         toast.success(`Resource "${resourceName}" created successfully`);
-        navigate("/permissions");
+        navigate("/rbac-manager/resources");
       } else {
         const error = await response.json();
         toast.error(error.message || "Failed to create resource");
@@ -139,7 +139,7 @@ const CreateResourcePage = () => {
       <div className="px-6 py-4">
         <Button
           variant="transparent"
-          onClick={() => navigate("/permissions")}
+          onClick={() => navigate("/rbac-manager/resources")}
           className="mb-4"
           size="small"
         >
@@ -273,7 +273,7 @@ const CreateResourcePage = () => {
           <div className="flex gap-2">
             <Button
               variant="secondary"
-              onClick={() => navigate("/permissions")}
+              onClick={() => navigate("/rbac-manager/resources")}
             >
               Cancel
             </Button>

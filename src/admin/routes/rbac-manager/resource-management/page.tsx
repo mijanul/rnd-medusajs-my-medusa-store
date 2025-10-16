@@ -101,7 +101,7 @@ const ResourcesListPage = () => {
   };
 
   const filteredResources = resourceManagement.filter((res) =>
-    res.resource.toLowerCase().includes(filter.toLowerCase())
+    res.resource.toLowerCase().trim().includes(filter.trim().toLowerCase())
   );
 
   if (loading) {

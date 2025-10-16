@@ -134,10 +134,11 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
     // Create new permissions
     const createdPermissions: any[] = [];
     for (const permData of toCreate) {
+      const action = permData.action.trim().toLowerCase();
       const created = await roleManagementService.createPermission({
-        name: `${resource}:${permData.action}`,
-        resource: resource,
-        action: permData.action,
+        name: `${resource.trim().toLowerCase()}-${action}`,
+        resource: resource.trim(),
+        action: action,
         description: permData.description,
       });
       createdPermissions.push(created);

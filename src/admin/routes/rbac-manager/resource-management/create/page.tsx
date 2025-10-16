@@ -191,8 +191,7 @@ const CreateResourcePage = () => {
               <p className="text-red-600 text-xs mt-1">{resourceNameError}</p>
             )}
             <p className="text-ui-fg-subtle mt-2 text-xs">
-              Use lowercase, singular form. Only letters, numbers, hyphens, and
-              underscores allowed.
+              Only letters, numbers, hyphens, and underscores allowed.
             </p>
           </div>
         </div>
@@ -203,8 +202,7 @@ const CreateResourcePage = () => {
               Standard Permissions
             </Heading>
             <p className="text-ui-fg-subtle text-sm">
-              Select the standard CRUD operations for this resource. These are
-              industry-standard practices.
+              Select the standard CRUD operations for this resource.
             </p>
           </div>
 

@@ -122,8 +122,8 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       if (!action) continue;
 
       const created = await roleManagementService.createPermission({
-        name: `${resource}:${action}`,
-        resource: resource,
+        name: `${resource.toLowerCase().trim()}-${action}`,
+        resource: resource.trim(),
         action: action,
         description:
           permData.description || `${action} permission for ${resource}`,

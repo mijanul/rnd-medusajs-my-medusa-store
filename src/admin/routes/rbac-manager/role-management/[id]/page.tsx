@@ -9,6 +9,7 @@ import {
   Switch,
   toast,
   Checkbox,
+  Table,
 } from "@medusajs/ui";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -126,6 +127,12 @@ const RoleDetailPage = () => {
 
       if (response.ok) {
         toast.success("Role updated successfully");
+        // Update local role state
+        if (role) {
+          setRole({ ...role, ...data });
+        }
+        // Refetch to ensure we have the latest data
+        fetchRoleData();
       } else {
         const error = await response.json();
         toast.error(error.message || "Failed to update role");
@@ -138,6 +145,48 @@ const RoleDetailPage = () => {
     }
   };
 
+  const handleToggleActive = async (newStatus: boolean) => {
+    const statusText = newStatus ? "activate" : "deactivate";
+    const confirmMessage = newStatus
+      ? `Are you sure you want to activate the role "${role?.name}"? Active roles can be assigned to users.`
+      : `Are you sure you want to deactivate the role "${role?.name}"? Users with this role may lose access.`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/admin/roles/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          is_active: newStatus,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success(`Role ${statusText}d successfully`);
+        setValue("is_active", newStatus);
+        if (role) {
+          setRole({ ...role, is_active: newStatus });
+        }
+      } else {
+        const error = await response.json();
+        toast.error(error.message || `Failed to ${statusText} role`);
+        // Revert the switch if failed
+        setValue("is_active", !newStatus);
+      }
+    } catch (error) {
+      console.error(`Error ${statusText}ing role:`, error);
+      toast.error(`Failed to ${statusText} role`);
+      // Revert the switch if failed
+      setValue("is_active", !newStatus);
+    }
+  };
+
   const handlePermissionToggle = (permissionId: string) => {
     const newSelected = new Set(selectedPermissionIds);
     if (newSelected.has(permissionId)) {
@@ -146,6 +195,36 @@ const RoleDetailPage = () => {
       newSelected.add(permissionId);
     }
     setSelectedPermissionIds(newSelected);
+  };
+
+  const handleResourceToggle = (resource: string) => {
+    const resourcePerms = groupedPermissions[resource] || [];
+    const resourcePermIds = resourcePerms.map((p) => p.id);
+    const allSelected = resourcePermIds.every((id) =>
+      selectedPermissionIds.has(id)
+    );
+
+    const newSelected = new Set(selectedPermissionIds);
+    if (allSelected) {
+      // Deselect all permissions for this resource
+      resourcePermIds.forEach((id) => newSelected.delete(id));
+    } else {
+      // Select all permissions for this resource
+      resourcePermIds.forEach((id) => newSelected.add(id));
+    }
+    setSelectedPermissionIds(newSelected);
+  };
+
+  const getResourceCheckboxState = (resource: string) => {
+    const resourcePerms = groupedPermissions[resource] || [];
+    const resourcePermIds = resourcePerms.map((p) => p.id);
+    const selectedCount = resourcePermIds.filter((id) =>
+      selectedPermissionIds.has(id)
+    ).length;
+
+    if (selectedCount === 0) return "unchecked";
+    if (selectedCount === resourcePermIds.length) return "checked";
+    return "indeterminate";
   };
 
   const handleSavePermissions = async () => {
@@ -278,20 +357,31 @@ const RoleDetailPage = () => {
 
               <div className="border-ui-border-base rounded-lg border p-4">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="is_active" className="font-medium">
-                      Active
-                    </Label>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor="is_active" className="font-medium">
+                        Role Status
+                      </Label>
+                      <span
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                          getValues("is_active")
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {getValues("is_active") ? "Active" : "Inactive"}
+                      </span>
+                    </div>
                     <p className="text-ui-fg-subtle mt-1 text-sm">
-                      Enable or disable this role
+                      {getValues("is_active")
+                        ? "This role is active and can be assigned to users"
+                        : "This role is inactive and cannot be assigned to users"}
                     </p>
                   </div>
                   <Switch
                     id="is_active"
                     checked={getValues("is_active")}
-                    onCheckedChange={(checked) =>
-                      setValue("is_active", checked)
-                    }
+                    onCheckedChange={handleToggleActive}
                   />
                 </div>
               </div>
@@ -314,56 +404,113 @@ const RoleDetailPage = () => {
 
         {/* Permissions Section */}
         <div className="border-ui-border-base border-t pt-8">
-          <div className="mb-4 flex items-center justify-between">
-            <Heading level="h2">Permissions</Heading>
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <Heading level="h2">Permissions</Heading>
+              <p className="text-ui-fg-subtle mt-1 text-sm">
+                Select permissions to grant this role access to specific actions
+              </p>
+            </div>
             <Button
               variant="primary"
               size="small"
               onClick={handleSavePermissions}
               isLoading={saving}
             >
-              Save Permissions
+              {saving ? "Saving..." : "Save Permissions"}
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {Object.entries(groupedPermissions).map(([resource, perms]) => (
-              <div
-                key={resource}
-                className="border-ui-border-base rounded-lg border p-4"
-              >
-                <h3 className="mb-3 font-semibold capitalize">{resource}</h3>
-                <div className="flex flex-col gap-3">
-                  {perms.map((perm) => (
-                    <div key={perm.id} className="flex items-start gap-2">
-                      <Checkbox
-                        id={perm.id}
-                        checked={selectedPermissionIds.has(perm.id)}
-                        onCheckedChange={() => handlePermissionToggle(perm.id)}
-                      />
-                      <div className="flex-1">
-                        <Label
-                          htmlFor={perm.id}
-                          className="cursor-pointer text-sm font-medium"
-                        >
-                          {perm.action}
-                        </Label>
-                        {perm.description && (
-                          <p className="text-ui-fg-subtle mt-1 text-xs">
-                            {perm.description}
-                          </p>
+          {allPermissions.length === 0 ? (
+            <div className="text-ui-fg-subtle rounded-lg border border-ui-border-base bg-ui-bg-subtle py-12 text-center">
+              <p>No permissions available</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {Object.entries(groupedPermissions).map(([resource, perms]) => {
+                const checkboxState = getResourceCheckboxState(resource);
+                const isChecked = checkboxState === "checked";
+                const isIndeterminate = checkboxState === "indeterminate";
+
+                return (
+                  <div
+                    key={resource}
+                    className="overflow-hidden rounded-lg border border-ui-border-base"
+                  >
+                    {/* Resource Header with Master Checkbox */}
+                    <div className="bg-ui-bg-subtle flex items-center gap-3 border-b border-ui-border-base px-4 py-3">
+                      <div className="relative">
+                        <Checkbox
+                          id={`resource-${resource}`}
+                          checked={isChecked}
+                          onCheckedChange={() => handleResourceToggle(resource)}
+                        />
+                        {isIndeterminate && (
+                          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                            <div className="h-2 w-2 rounded-sm bg-ui-fg-interactive" />
+                          </div>
                         )}
                       </div>
+                      <Label
+                        htmlFor={`resource-${resource}`}
+                        className="cursor-pointer text-base font-semibold capitalize"
+                      >
+                        {resource}
+                      </Label>
+                      <span className="text-ui-fg-subtle ml-auto text-sm">
+                        {
+                          perms.filter((p) => selectedPermissionIds.has(p.id))
+                            .length
+                        }{" "}
+                        / {perms.length} selected
+                      </span>
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
 
-          {allPermissions.length === 0 && (
-            <div className="text-ui-fg-subtle py-8 text-center">
-              No permissions available
+                    {/* Permissions Table */}
+                    <Table>
+                      <Table.Header>
+                        <Table.Row>
+                          <Table.HeaderCell className="w-12"></Table.HeaderCell>
+                          <Table.HeaderCell>Action</Table.HeaderCell>
+                          <Table.HeaderCell>Description</Table.HeaderCell>
+                        </Table.Row>
+                      </Table.Header>
+                      <Table.Body>
+                        {perms.map((perm) => (
+                          <Table.Row
+                            key={perm.id}
+                            className="cursor-pointer hover:bg-ui-bg-subtle-hover"
+                            onClick={() => handlePermissionToggle(perm.id)}
+                          >
+                            <Table.Cell onClick={(e) => e.stopPropagation()}>
+                              <Checkbox
+                                id={perm.id}
+                                checked={selectedPermissionIds.has(perm.id)}
+                                onCheckedChange={() =>
+                                  handlePermissionToggle(perm.id)
+                                }
+                              />
+                            </Table.Cell>
+                            <Table.Cell>
+                              <Label
+                                htmlFor={perm.id}
+                                className="cursor-pointer font-medium"
+                              >
+                                {perm.action}
+                              </Label>
+                            </Table.Cell>
+                            <Table.Cell>
+                              <span className="text-ui-fg-subtle text-sm">
+                                {perm.description || "No description"}
+                              </span>
+                            </Table.Cell>
+                          </Table.Row>
+                        ))}
+                      </Table.Body>
+                    </Table>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

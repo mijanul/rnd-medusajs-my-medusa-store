@@ -1,5 +1,13 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk";
-import { Container, Heading, Button, Table, Badge, toast } from "@medusajs/ui";
+import {
+  Container,
+  Heading,
+  Button,
+  Table,
+  Badge,
+  toast,
+  Switch,
+} from "@medusajs/ui";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PencilSquare, Trash, Plus } from "@medusajs/icons";
@@ -63,6 +71,44 @@ const RolesListPage = () => {
     } catch (error) {
       console.error("Error deleting role:", error);
       toast.error("Failed to delete role");
+    }
+  };
+
+  const handleToggleStatus = async (e: React.MouseEvent, role: Role) => {
+    e.stopPropagation();
+
+    const newStatus = !role.is_active;
+    const statusText = newStatus ? "activate" : "deactivate";
+    const confirmMessage = newStatus
+      ? `Activate the role "${role.name}"? It will be available for assignment.`
+      : `Deactivate the role "${role.name}"? Users may lose associated permissions.`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/admin/roles/${role.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          is_active: newStatus,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success(`Role ${statusText}d successfully`);
+        fetchRoles();
+      } else {
+        const error = await response.json();
+        toast.error(error.message || `Failed to ${statusText} role`);
+      }
+    } catch (error) {
+      console.error(`Error ${statusText}ing role:`, error);
+      toast.error(`Failed to ${statusText} role`);
     }
   };
 
@@ -137,12 +183,23 @@ const RolesListPage = () => {
                     </span>
                   </Table.Cell>
                   <Table.Cell>
-                    <Badge
-                      color={role.is_active ? "green" : "grey"}
-                      size="small"
+                    <div
+                      className="flex items-center gap-2"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      {role.is_active ? "Active" : "Inactive"}
-                    </Badge>
+                      <Switch
+                        checked={role.is_active}
+                        onCheckedChange={() =>
+                          handleToggleStatus({} as React.MouseEvent, role)
+                        }
+                      />
+                      <Badge
+                        color={role.is_active ? "green" : "grey"}
+                        size="small"
+                      >
+                        {role.is_active ? "Active" : "Inactive"}
+                      </Badge>
+                    </div>
                   </Table.Cell>
                   <Table.Cell className="text-right">
                     <div className="flex items-center justify-end gap-2">

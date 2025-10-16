@@ -107,21 +107,23 @@ class RoleManagementService extends MedusaService({
 
   // Role-Permission methods
   async assignPermissionsToRole(roleId: string, permissionIds: string[]) {
+    // First, remove all existing permissions for this role
+    const existingPermissions = await this.listRolePermissions({
+      role_id: roleId,
+    });
+
+    for (const rp of existingPermissions) {
+      await this.deleteRolePermissions(rp.id);
+    }
+
+    // Then, add the new permissions
     const created: any[] = [];
     for (const permissionId of permissionIds) {
-      // Check if already exists
-      const existing = await this.listRolePermissions({
+      const rp = await this.createRolePermissions({
         role_id: roleId,
         permission_id: permissionId,
       });
-
-      if (existing.length === 0) {
-        const rp = await this.createRolePermissions({
-          role_id: roleId,
-          permission_id: permissionId,
-        });
-        created.push(rp);
-      }
+      created.push(rp);
     }
     return created;
   }

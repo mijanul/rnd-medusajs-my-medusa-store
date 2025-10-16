@@ -81,6 +81,9 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
 // DELETE /admin/permission-resource-management/:resource - Delete all permissions for a resource
 export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
   const { resource } = req.params;
+  console.log(
+    `[DEBUG] DELETE /admin/permission-resource-management/${resource}`
+  );
 
   try {
     const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
@@ -89,6 +92,10 @@ export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
     const allPermissions = await roleManagementService.listPermissions({});
     const permissions = allPermissions.filter(
       (p: any) => p.resource === resource
+    );
+
+    console.log(
+      `[DEBUG] Found ${permissions.length} permissions for resource: ${resource}`
     );
 
     // Delete all permissions for the resource

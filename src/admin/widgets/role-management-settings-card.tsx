@@ -72,7 +72,7 @@ const RoleManagementSettingsWidget = () => {
 };
 
 export const config = defineWidgetConfig({
-  zone: "order.details.before",
+  zone: "order.list.after",
 });
 
 export default RoleManagementSettingsWidget;

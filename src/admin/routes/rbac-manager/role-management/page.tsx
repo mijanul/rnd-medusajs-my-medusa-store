@@ -189,9 +189,12 @@ const RolesListPage = () => {
                     >
                       <Switch
                         checked={role.is_active}
-                        onCheckedChange={() =>
-                          handleToggleStatus({} as React.MouseEvent, role)
-                        }
+                        onCheckedChange={() => {
+                          const event = {
+                            stopPropagation: () => {},
+                          } as React.MouseEvent;
+                          handleToggleStatus(event, role);
+                        }}
                       />
                       <Badge
                         color={role.is_active ? "green" : "grey"}

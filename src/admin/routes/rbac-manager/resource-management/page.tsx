@@ -216,8 +216,8 @@ const ResourcesListPage = () => {
   );
 };
 
-export const config = defineRouteConfig({
-  label: "Resource Management",
-});
+// export const config = defineRouteConfig({
+//   label: "Resource Management",
+// });
 
 export default ResourcesListPage;

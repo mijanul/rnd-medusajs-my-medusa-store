@@ -32,7 +32,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   });
 };
 
-// POST /admin/users/:id/roles - Assign roles to a user
+// POST /admin/users/:id/roles - Assign roles to a user (replaces existing roles)
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   const { id } = req.params;
   const body = req.body as any;
@@ -47,7 +47,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     const roleManagementService = req.scope.resolve(ROLE_MANAGEMENT_MODULE);
 
-    // Verify all roles exist
+    // Verify all roles exist and are active
     for (const roleId of role_ids) {
       const role = await roleManagementService.getRoleById(roleId);
       if (!role) {
@@ -62,19 +62,39 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       }
     }
 
-    // Assign roles to user
-    const assigned = await roleManagementService.assignRolesToUser(
-      id,
-      role_ids
+    // Get current roles
+    const currentUserRoles = await roleManagementService.getUserRoles(id);
+    const currentRoleIds = currentUserRoles.map((ur: any) => ur.role_id);
+
+    // Determine roles to remove and add
+    const rolesToRemove = currentRoleIds.filter(
+      (roleId: string) => !role_ids.includes(roleId)
+    );
+    const rolesToAdd = role_ids.filter(
+      (roleId: string) => !currentRoleIds.includes(roleId)
     );
 
-    res.status(201).json({
-      message: "Roles assigned successfully",
+    // Remove old roles
+    if (rolesToRemove.length > 0) {
+      await roleManagementService.removeRolesFromUser(id, rolesToRemove);
+    }
+
+    // Add new roles
+    let assigned: any[] = [];
+    if (rolesToAdd.length > 0) {
+      assigned = await roleManagementService.assignRolesToUser(id, rolesToAdd);
+    }
+
+    res.status(200).json({
+      message: "Roles updated successfully",
       user_id: id,
-      assigned_count: assigned.length,
+      total_roles: role_ids.length,
+      added_count: rolesToAdd.length,
+      removed_count: rolesToRemove.length,
       assignments: assigned,
     });
   } catch (error: any) {
+    console.error("Error assigning roles:", error);
     res.status(500).json({
       message: "Failed to assign roles",
       error: error.message,

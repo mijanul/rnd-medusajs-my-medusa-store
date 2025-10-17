@@ -18,7 +18,7 @@ const RBACManagerPage = () => {
       </div>
 
       <div className="px-6 py-8">
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <a
             href="/app/rbac-manager/role-management"
             className="border-ui-border-base hover:bg-ui-bg-subtle-hover rounded-lg border p-6 transition-colors"
@@ -32,7 +32,7 @@ const RBACManagerPage = () => {
             </p>
           </a>
 
-          <a
+          {/* <a
             href="/app/rbac-manager/resource-management"
             className="border-ui-border-base hover:bg-ui-bg-subtle-hover rounded-lg border p-6 transition-colors"
           >
@@ -43,7 +43,19 @@ const RBACManagerPage = () => {
               Define permission Resource Management and configure access
               controls for different entities
             </p>
-          </a>
+          </a> */}
+
+          {/* <a
+            href="/app/rbac-manager/user-management"
+            className="border-ui-border-base hover:bg-ui-bg-subtle-hover rounded-lg border p-6 transition-colors"
+          >
+            <Heading level="h2" className="mb-2">
+              User Management
+            </Heading>
+            <p className="text-ui-fg-subtle text-sm">
+              Manage users and assign roles for access control
+            </p>
+          </a> */}
         </div>
       </div>
     </Container>

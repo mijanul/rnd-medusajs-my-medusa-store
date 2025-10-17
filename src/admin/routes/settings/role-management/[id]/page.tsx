@@ -84,12 +84,12 @@ const RoleDetailPage = () => {
         setSelectedPermissionIds(permIds);
       } else {
         toast.error("Failed to load role");
-        navigate("/rbac-manager/role-management");
+        navigate("/settings/role-management");
       }
     } catch (error) {
       console.error("Error fetching role:", error);
       toast.error("Failed to load role");
-      navigate("/rbac-manager/role-management");
+      navigate("/settings/role-management");
     } finally {
       setLoading(false);
     }
@@ -207,7 +207,7 @@ const RoleDetailPage = () => {
       <div className="flex items-center gap-4 px-6 py-4">
         <Button
           variant="transparent"
-          onClick={() => navigate("/rbac-manager/role-management")}
+          onClick={() => navigate("/settings/role-management")}
           size="small"
         >
           <ArrowLeft />
@@ -286,7 +286,7 @@ const RoleDetailPage = () => {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => navigate("/rbac-manager/role-management")}
+              onClick={() => navigate("/settings/role-management")}
             >
               Cancel
             </Button>

@@ -1,4 +1,4 @@
-import { defineWidgetConfig } from "@medusajs/admin-sdk";
+// import { defineWidgetConfig } from "@medusajs/admin-sdk";
 import { Container, Heading } from "@medusajs/ui";
 import { ShieldCheck, Users, Key } from "@medusajs/icons";
 import { useNavigate } from "react-router-dom";
@@ -71,8 +71,8 @@ const RoleManagementSettingsWidget = () => {
   );
 };
 
-export const config = defineWidgetConfig({
-  zone: "order.list.after",
-});
+// export const config = defineWidgetConfig({
+//   zone: "order.list.after",
+// });
 
 export default RoleManagementSettingsWidget;

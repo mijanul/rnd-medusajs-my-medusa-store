@@ -58,7 +58,7 @@ export const useUserPermissions = () => {
 
   /**
    * Check if user has a specific permission
-   * @param resource - Resource name (e.g., "pages", "products")
+   * @param resource - Resource name (e.g., "pages", "products") - case-insensitive
    * @param action - Action name (e.g., "view", "create", "update")
    */
   const hasPermission = (resource: string, action: string): boolean => {
@@ -67,8 +67,15 @@ export const useUserPermissions = () => {
     // Super admin has all permissions
     if (permissions.is_super_admin) return true;
 
-    // Check for specific permission
-    const resourcePermissions = permissions.permissions_by_resource[resource];
+    // Case-insensitive resource lookup
+    const resourceKey = Object.keys(permissions.permissions_by_resource).find(
+      (key) => key.toLowerCase() === resource.toLowerCase()
+    );
+
+    if (!resourceKey) return false;
+
+    const resourcePermissions =
+      permissions.permissions_by_resource[resourceKey];
     if (!resourcePermissions) return false;
 
     // Check if user has the specific action or "all" action for this resource
@@ -80,12 +87,18 @@ export const useUserPermissions = () => {
 
   /**
    * Check if user has any permission for a resource
-   * @param resource - Resource name
+   * @param resource - Resource name - case-insensitive
    */
   const hasAnyPermission = (resource: string): boolean => {
     if (!permissions) return false;
     if (permissions.is_super_admin) return true;
-    return !!permissions.permissions_by_resource[resource];
+
+    // Case-insensitive resource lookup
+    const resourceKey = Object.keys(permissions.permissions_by_resource).find(
+      (key) => key.toLowerCase() === resource.toLowerCase()
+    );
+
+    return !!resourceKey;
   };
 
   /**
@@ -138,8 +151,14 @@ export const checkPermission = async (
     // Super admin has all permissions
     if (data.is_super_admin) return true;
 
-    // Check for specific permission
-    const resourcePermissions = data.permissions_by_resource[resource];
+    // Case-insensitive resource lookup
+    const resourceKey = Object.keys(data.permissions_by_resource).find(
+      (key) => key.toLowerCase() === resource.toLowerCase()
+    );
+
+    if (!resourceKey) return false;
+
+    const resourcePermissions = data.permissions_by_resource[resourceKey];
     if (!resourcePermissions) return false;
 
     return (

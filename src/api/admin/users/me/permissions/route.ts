@@ -9,8 +9,9 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
-    // Get current user from auth context
-    const userId = (req as any).auth?.actor_id;
+    // Get current user from auth context (Medusa v2)
+    // @ts-ignore - auth_context is available in authenticated admin routes
+    const userId = req.auth_context?.actor_id;
 
     if (!userId) {
       return res.status(401).json({
@@ -29,7 +30,6 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     if (!userRoles || userRoles.length === 0) {
       // User has no roles assigned, return empty permissions
       return res.json({
-        user_id: userId,
         roles: [],
         permissions: [],
         has_permissions: false,
@@ -37,6 +37,14 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     }
 
     const roleIds = userRoles.map((ur: any) => ur.role_id);
+
+    // Get role names for user's roles
+    const { data: rolesData } = await query.graph({
+      entity: "role",
+      fields: ["id", "name"],
+      filters: { id: roleIds },
+    });
+    const roleNames = rolesData.map((r: any) => r.name);
 
     // Get permissions for all user's roles
     const { data: rolePermissions } = await query.graph({
@@ -47,8 +55,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
 
     if (!rolePermissions || rolePermissions.length === 0) {
       return res.json({
-        user_id: userId,
-        roles: roleIds,
+        roles: roleNames,
         permissions: [],
         has_permissions: false,
       });
@@ -65,12 +72,6 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
       filters: { id: permissionIds },
     });
 
-    // Check for super admin (has "all-all" permission)
-    const isSuperAdmin = permissions.some(
-      (p: any) =>
-        p.name === "all-all" || (p.resource === "all" && p.action === "all")
-    );
-
     // Group permissions by resource for easy lookup
     const permissionsByResource = permissions.reduce((acc: any, perm: any) => {
       if (!acc[perm.resource]) {
@@ -81,12 +82,10 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     }, {});
 
     res.json({
-      user_id: userId,
-      roles: roleIds,
+      roles: roleNames,
       permissions: permissions,
       permissions_by_resource: permissionsByResource,
       has_permissions: permissions.length > 0,
-      is_super_admin: isSuperAdmin,
       total_permissions: permissions.length,
     });
   } catch (error: any) {

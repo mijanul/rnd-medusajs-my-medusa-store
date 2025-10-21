@@ -11,7 +11,7 @@
  */
 
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import { userHasPermission, userHasRole, isSuperAdmin } from "./utils";
+import { userHasPermission, userHasRole } from "./utils";
 
 type RouteHandler = (req: MedusaRequest, res: MedusaResponse) => Promise<any>;
 
@@ -24,8 +24,9 @@ export function requirePermission(permissionName: string) {
   return function (handler: RouteHandler): RouteHandler {
     return async (req: MedusaRequest, res: MedusaResponse) => {
       try {
-        // Get user ID from request (adjust based on your auth implementation)
-        const userId = (req as any).user?.id || (req as any).auth?.actor_id;
+        // Get user ID from auth context (Medusa v2)
+        // @ts-ignore - auth_context is available in authenticated admin routes
+        const userId = req.auth_context?.actor_id;
 
         if (!userId) {
           return res.status(401).json({
@@ -67,7 +68,9 @@ export function requireRole(roleSlug: string) {
   return function (handler: RouteHandler): RouteHandler {
     return async (req: MedusaRequest, res: MedusaResponse) => {
       try {
-        const userId = (req as any).user?.id || (req as any).auth?.actor_id;
+        // Get user ID from auth context (Medusa v2)
+        // @ts-ignore - auth_context is available in authenticated admin routes
+        const userId = req.auth_context?.actor_id;
 
         if (!userId) {
           return res.status(401).json({
@@ -95,41 +98,6 @@ export function requireRole(roleSlug: string) {
 }
 
 /**
- * Middleware to require super admin role
- * @returns Wrapped route handler
- */
-export function requireSuperAdmin() {
-  return function (handler: RouteHandler): RouteHandler {
-    return async (req: MedusaRequest, res: MedusaResponse) => {
-      try {
-        const userId = (req as any).user?.id || (req as any).auth?.actor_id;
-
-        if (!userId) {
-          return res.status(401).json({
-            message: "Unauthorized: No user found",
-          });
-        }
-
-        const isSuperAdminUser = await isSuperAdmin(req.scope, userId);
-
-        if (!isSuperAdminUser) {
-          return res.status(403).json({
-            message: "Forbidden: Super admin access required",
-          });
-        }
-
-        return handler(req, res);
-      } catch (error: any) {
-        return res.status(500).json({
-          message: "Error checking super admin status",
-          error: error.message,
-        });
-      }
-    };
-  };
-}
-
-/**
  * Middleware to require any of the specified permissions
  * @param permissionNames - Array of permission names
  * @returns Wrapped route handler
@@ -138,7 +106,9 @@ export function requireAnyPermission(permissionNames: string[]) {
   return function (handler: RouteHandler): RouteHandler {
     return async (req: MedusaRequest, res: MedusaResponse) => {
       try {
-        const userId = (req as any).user?.id || (req as any).auth?.actor_id;
+        // Get user ID from auth context (Medusa v2)
+        // @ts-ignore - auth_context is available in authenticated admin routes
+        const userId = req.auth_context?.actor_id;
 
         if (!userId) {
           return res.status(401).json({

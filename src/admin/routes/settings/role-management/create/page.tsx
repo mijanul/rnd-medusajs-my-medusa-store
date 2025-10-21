@@ -232,7 +232,7 @@ const RoleCreatePage = () => {
           ) : (
             <div className="space-y-6">
               {Object.entries(groupedPermissions).map(([resource, perms]) => {
-                const actions = ["list", "view", "create", "edit", "delete"];
+                const actions = ["list", "view", "create", "update", "delete"];
                 const permsByAction: Record<string, Permission | undefined> =
                   {};
                 perms.forEach((perm) => {
@@ -261,7 +261,7 @@ const RoleCreatePage = () => {
                             Create
                           </Table.HeaderCell>
                           <Table.HeaderCell className="text-center w-20">
-                            Edit
+                            Update
                           </Table.HeaderCell>
                           <Table.HeaderCell className="text-center w-20">
                             Delete
@@ -307,21 +307,29 @@ const RoleCreatePage = () => {
                         </Table.Row>
                       </Table.Body>
                       <tbody>
-                        <tr className="bg-ui-bg-subtle">
-                          <td colSpan={6} className="px-4 py-3">
-                            <div className="text-ui-fg-subtle text-sm">
-                              {perms.map((perm, idx) => (
-                                <span key={perm.id}>
-                                  {idx > 0 && " | "}
-                                  <strong className="capitalize">
-                                    {perm.action}:
-                                  </strong>{" "}
-                                  {perm.description || "No description"}
-                                </span>
-                              ))}
-                            </div>
-                          </td>
-                        </tr>
+                        {perms.some((perm) =>
+                          selectedPermissionIds.has(perm.id)
+                        ) && (
+                          <tr className="bg-ui-bg-subtle">
+                            <td colSpan={6} className="px-4 py-3">
+                              <div className="text-ui-fg-subtle text-sm">
+                                {perms
+                                  .filter((perm) =>
+                                    selectedPermissionIds.has(perm.id)
+                                  )
+                                  .map((perm, idx) => (
+                                    <span key={perm.id}>
+                                      {idx > 0 && " | "}
+                                      <strong className="capitalize">
+                                        {perm.action}:
+                                      </strong>{" "}
+                                      {perm.description || "No description"}
+                                    </span>
+                                  ))}
+                              </div>
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </Table>
                   </div>

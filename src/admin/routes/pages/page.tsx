@@ -10,6 +10,8 @@ import {
 } from "@medusajs/icons";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useUserPermissions } from "../../lib/use-permissions";
+import { RestrictedAccess } from "../../components/restricted-access";
 
 // ++ Test comment
 type Page = {
@@ -26,6 +28,16 @@ type Page = {
 const PagesListPage = () => {
   const [pages, setPages] = useState<Page[]>([]);
   const [loading, setLoading] = useState(true);
+  const { hasPermission, loading: permissionsLoading } = useUserPermissions();
+
+  // Check if user has view permission
+  if (permissionsLoading) {
+    return <Container className="p-8">Loading...</Container>;
+  }
+
+  if (!hasPermission("pages", "list") && !hasPermission("pages", "view")) {
+    return <RestrictedAccess resource="pages" action="view" />;
+  }
 
   useEffect(() => {
     fetchPages();
@@ -103,22 +115,26 @@ const PagesListPage = () => {
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
         <Heading level="h1">Pages</Heading>
-        <Link to="/pages/create">
-          <Button variant="primary">
-            <Plus /> Create Page
-          </Button>
-        </Link>
+        {hasPermission("pages", "create") && (
+          <Link to="/pages/create">
+            <Button variant="primary">
+              <Plus /> Create Page
+            </Button>
+          </Link>
+        )}
       </div>
 
       <div className="px-6 py-4">
         {pages.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
             <p className="text-ui-fg-subtle mb-4">No pages created yet</p>
-            <Link to="/pages/create">
-              <Button variant="primary">
-                <Plus /> Create Your First Page
-              </Button>
-            </Link>
+            {hasPermission("pages", "create") && (
+              <Link to="/pages/create">
+                <Button variant="primary">
+                  <Plus /> Create Your First Page
+                </Button>
+              </Link>
+            )}
           </div>
         ) : (
           <Table>
@@ -165,27 +181,33 @@ const PagesListPage = () => {
                   </Table.Cell>
                   <Table.Cell className="text-right">
                     {page.deleted_at ? (
-                      <Button
-                        variant="transparent"
-                        size="small"
-                        onClick={() => handleRestore(page.id)}
-                      >
-                        <ArrowPathMini />
-                      </Button>
-                    ) : (
-                      <div className="flex items-center justify-end gap-2">
-                        <Link to={`/pages/${page.id}`}>
-                          <Button variant="transparent" size="small">
-                            <PencilSquare />
-                          </Button>
-                        </Link>
+                      hasPermission("pages", "update") && (
                         <Button
                           variant="transparent"
                           size="small"
-                          onClick={() => handleDelete(page.id, page.title)}
+                          onClick={() => handleRestore(page.id)}
                         >
-                          <Trash className="text-ui-fg-error" />
+                          <ArrowPathMini />
                         </Button>
+                      )
+                    ) : (
+                      <div className="flex items-center justify-end gap-2">
+                        {hasPermission("pages", "update") && (
+                          <Link to={`/pages/${page.id}`}>
+                            <Button variant="transparent" size="small">
+                              <PencilSquare />
+                            </Button>
+                          </Link>
+                        )}
+                        {hasPermission("pages", "delete") && (
+                          <Button
+                            variant="transparent"
+                            size="small"
+                            onClick={() => handleDelete(page.id, page.title)}
+                          >
+                            <Trash className="text-ui-fg-error" />
+                          </Button>
+                        )}
                       </div>
                     )}
                   </Table.Cell>

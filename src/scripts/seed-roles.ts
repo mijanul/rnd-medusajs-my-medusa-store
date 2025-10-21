@@ -13,7 +13,7 @@ const RESOURCES = [
   { name: "promotions", description: "Promotions" },
   { name: "price_lists", description: "Price Lists" },
   { name: "settings", description: "Settings" },
-  { name: "pages", description: "Pages (Custom)" }, // Custom module
+  { name: "pages", description: "Pages" },
 ];
 
 /**

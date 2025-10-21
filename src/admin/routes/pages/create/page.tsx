@@ -12,10 +12,13 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "@medusajs/icons";
+import { useUserPermissions } from "../../../lib/use-permissions";
+import { RestrictedAccess } from "../../../components/restricted-access";
 
 const PageCreatePage = () => {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
+  const { hasPermission, loading: permissionsLoading } = useUserPermissions();
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
@@ -24,6 +27,15 @@ const PageCreatePage = () => {
     meta_description: "",
     is_published: true,
   });
+
+  // Check if user has create permission
+  if (permissionsLoading) {
+    return <Container className="p-8">Loading...</Container>;
+  }
+
+  if (!hasPermission("pages", "create")) {
+    return <RestrictedAccess resource="pages" action="create" />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

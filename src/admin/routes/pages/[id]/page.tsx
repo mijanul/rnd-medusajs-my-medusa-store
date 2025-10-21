@@ -12,6 +12,8 @@ import {
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "@medusajs/icons";
+import { useUserPermissions } from "../../../lib/use-permissions";
+import { RestrictedAccess } from "../../../components/restricted-access";
 
 type PageData = {
   id: string;
@@ -29,6 +31,7 @@ const PageEditPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const { hasPermission, loading: permissionsLoading } = useUserPermissions();
   const [formData, setFormData] = useState<PageData>({
     id: "",
     title: "",
@@ -39,6 +42,15 @@ const PageEditPage = () => {
     is_published: true,
     published_at: null,
   });
+
+  // Check if user has update permission
+  if (permissionsLoading) {
+    return <Container className="p-8">Loading...</Container>;
+  }
+
+  if (!hasPermission("pages", "update") && !hasPermission("pages", "view")) {
+    return <RestrictedAccess resource="pages" action="update" />;
+  }
 
   useEffect(() => {
     if (id) {

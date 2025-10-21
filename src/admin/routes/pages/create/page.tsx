@@ -27,18 +27,27 @@ const PageCreatePage = () => {
     meta_description: "",
     is_published: true,
   });
-
-  // Check if user has create permission
-  if (permissionsLoading) {
-    return <Container className="p-8">Loading...</Container>;
-  }
-
-  if (!hasPermission("pages", "create")) {
-    return <RestrictedAccess resource="pages" action="create" />;
-  }
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({
+    title: false,
+    slug: false,
+    content: false,
+  });
+  const [showErrors, setShowErrors] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setShowErrors(true);
+
+    // Validate required fields
+    if (
+      !formData.title.trim() ||
+      !formData.slug.trim() ||
+      !formData.content.trim()
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
     setSaving(true);
 
     try {
@@ -81,6 +90,23 @@ const PageCreatePage = () => {
     }));
   };
 
+  const handleFieldBlur = (fieldName: string) => {
+    setTouchedFields((prev) => ({ ...prev, [fieldName]: true }));
+  };
+
+  const shouldShowError = (fieldName: string, value: string) => {
+    return (touchedFields[fieldName] || showErrors) && !value.trim();
+  };
+
+  // Check if user has create permission
+  if (permissionsLoading) {
+    return <Container className="p-8">Loading...</Container>;
+  }
+
+  if (!hasPermission("pages", "create")) {
+    return <RestrictedAccess resource="pages" action="create" />;
+  }
+
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center gap-4 px-6 py-4">
@@ -100,21 +126,29 @@ const PageCreatePage = () => {
           <div className="flex flex-col gap-6">
             <div>
               <Label htmlFor="title" className="mb-2">
-                Title *
+                Title <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="title"
                 type="text"
                 value={formData.title}
                 onChange={(e) => handleTitleChange(e.target.value)}
-                required
+                onBlur={() => handleFieldBlur("title")}
                 placeholder="e.g., About Us"
+                className={
+                  shouldShowError("title", formData.title)
+                    ? "border-red-500"
+                    : ""
+                }
               />
+              {shouldShowError("title", formData.title) && (
+                <p className="mt-1 text-sm text-red-500">Title is required</p>
+              )}
             </div>
 
             <div>
               <Label htmlFor="slug" className="mb-2">
-                Slug *
+                Slug <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="slug"
@@ -123,17 +157,24 @@ const PageCreatePage = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, slug: e.target.value })
                 }
-                required
+                onBlur={() => handleFieldBlur("slug")}
                 placeholder="e.g., about-us"
+                className={
+                  shouldShowError("slug", formData.slug) ? "border-red-500" : ""
+                }
               />
-              <p className="text-ui-fg-subtle mt-1 text-sm">
-                URL: /pages/{formData.slug || "your-slug"}
-              </p>
+              {shouldShowError("slug", formData.slug) ? (
+                <p className="mt-1 text-sm text-red-500">Slug is required</p>
+              ) : (
+                <p className="text-ui-fg-subtle mt-1 text-sm">
+                  URL: /pages/{formData.slug || "your-slug"}
+                </p>
+              )}
             </div>
 
             <div>
               <Label htmlFor="content" className="mb-2">
-                Content *
+                Content <span className="text-red-500">*</span>
               </Label>
               <Textarea
                 id="content"
@@ -141,13 +182,22 @@ const PageCreatePage = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, content: e.target.value })
                 }
-                required
+                onBlur={() => handleFieldBlur("content")}
                 rows={12}
                 placeholder="Enter HTML content..."
+                className={
+                  shouldShowError("content", formData.content)
+                    ? "border-red-500"
+                    : ""
+                }
               />
-              <p className="text-ui-fg-subtle mt-1 text-sm">
-                You can use HTML tags for formatting
-              </p>
+              {shouldShowError("content", formData.content) ? (
+                <p className="mt-1 text-sm text-red-500">Content is required</p>
+              ) : (
+                <p className="text-ui-fg-subtle mt-1 text-sm">
+                  You can use HTML tags for formatting
+                </p>
+              )}
             </div>
           </div>
 

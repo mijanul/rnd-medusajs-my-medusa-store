@@ -288,7 +288,7 @@ const RoleDetailPage = () => {
               variant="secondary"
               onClick={() => navigate("/settings/role-management")}
             >
-              Cancel
+              Back
             </Button>
             <Button type="submit" variant="primary" isLoading={saving}>
               {saving ? "Saving..." : "Save Role"}
@@ -382,6 +382,10 @@ const RoleDetailPage = () => {
                               }
                               const isChecked = selectedPermissionIds.has(
                                 perm.id
+                              );
+                              console.log(
+                                `Checkbox for ${perm.id} (${resource}-${action}):`,
+                                isChecked
                               );
                               return (
                                 <Table.Cell

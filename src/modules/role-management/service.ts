@@ -1,4 +1,5 @@
 import { MedusaService } from "@medusajs/framework/utils";
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 import Role from "./models/role";
 import Permission from "./models/permission";
 import RolePermission from "./models/role-permission";
@@ -116,16 +117,14 @@ class RoleManagementService extends MedusaService({
       await this.deleteRolePermissions(rp.id);
     }
 
-    // Then, add the new permissions
-    const created: any[] = [];
-    for (const permissionId of permissionIds) {
-      const rp = await this.createRolePermissions({
-        role_id: roleId,
-        permission_id: permissionId,
-      });
-      created.push(rp);
-    }
-    return created;
+    // Then, add the new permissions using bulk create
+    const dataToCreate = permissionIds.map((permissionId) => ({
+      role_id: roleId,
+      permission_id: permissionId,
+    }));
+
+    const created = await this.createRolePermissions(dataToCreate);
+    return Array.isArray(created) ? created : [created];
   }
 
   async removePermissionsFromRole(roleId: string, permissionIds: string[]) {

@@ -30,15 +30,6 @@ const PagesListPage = () => {
   const [loading, setLoading] = useState(true);
   const { hasPermission, loading: permissionsLoading } = useUserPermissions();
 
-  // Check if user has view permission
-  if (permissionsLoading) {
-    return <Container className="p-8">Loading...</Container>;
-  }
-
-  if (!hasPermission("pages", "list") && !hasPermission("pages", "view")) {
-    return <RestrictedAccess resource="pages" action="view" />;
-  }
-
   useEffect(() => {
     fetchPages();
   }, []);
@@ -48,6 +39,7 @@ const PagesListPage = () => {
       const response = await fetch("/admin/pages", {
         credentials: "include",
       });
+
       const data = await response.json();
       setPages(data.pages || []);
     } catch (error) {
@@ -100,6 +92,15 @@ const PagesListPage = () => {
       alert("Failed to restore page");
     }
   };
+
+  // Check if user has view permission
+  if (permissionsLoading) {
+    return <Container className="p-8">Loading...</Container>;
+  }
+
+  if (!hasPermission("pages", "list") && !hasPermission("pages", "view")) {
+    return <RestrictedAccess resource="pages" action="view" />;
+  }
 
   if (loading) {
     return (

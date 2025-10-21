@@ -62,10 +62,7 @@ export const useUserPermissions = () => {
    * @param action - Action name (e.g., "view", "create", "update")
    */
   const hasPermission = (resource: string, action: string): boolean => {
-    if (!permissions) return false;
-
-    // Super admin has all permissions
-    if (permissions.is_super_admin) return true;
+    if (!permissions || !permissions.has_permissions) return false;
 
     // Case-insensitive resource lookup
     const resourceKey = Object.keys(permissions.permissions_by_resource).find(
@@ -91,7 +88,7 @@ export const useUserPermissions = () => {
    */
   const hasAnyPermission = (resource: string): boolean => {
     if (!permissions) return false;
-    if (permissions.is_super_admin) return true;
+    // Removed super admin concept
 
     // Case-insensitive resource lookup
     const resourceKey = Object.keys(permissions.permissions_by_resource).find(
@@ -127,7 +124,7 @@ export const useUserPermissions = () => {
     hasAnyPermission,
     hasPermissions,
     hasAnyOfPermissions,
-    isSuperAdmin: permissions?.is_super_admin || false,
+    // Removed isSuperAdmin
     refetch: fetchPermissions,
   };
 };
@@ -148,8 +145,7 @@ export const checkPermission = async (
 
     const data: UserPermissions = await response.json();
 
-    // Super admin has all permissions
-    if (data.is_super_admin) return true;
+    // Removed super admin concept
 
     // Case-insensitive resource lookup
     const resourceKey = Object.keys(data.permissions_by_resource).find(

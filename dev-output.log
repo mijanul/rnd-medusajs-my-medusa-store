@@ -1,0 +1,72 @@
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    Watching filesystem to reload dev server on file change
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    Skipping instrumentation registration. No register function found.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    No link to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/links. skipped.
+[33mwarn[39m:    Local Event Bus installed. This is not recommended for production.
+[32minfo[39m:    Locking module: Using "in-memory" as default.
+[32minfo[39m:    No workflow to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/workflows. skipped.
+[32minfo[39m:    No subscriber to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/subscribers. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/medusa/dist/jobs. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/jobs. skipped.
+- Creating server
+✔ Server is ready on port: 9000 – 163ms
+[32minfo[39m:    Admin URL → http://localhost:9000/app
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 23.315 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 2.575 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 5.540 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 2.763 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 4.902 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 1.896 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 4.005 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 1.245 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 5.216 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 2.498 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 4.159 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 1.696 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 2.828 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 1.606 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 3.486 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 1.752 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 4.232 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 1.916 ms
+[32mhttp[39m:    GET /app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW ← - (304) - 90.103 ms
+[32mhttp[39m:    GET /.well-known/appspecific/com.chrome.devtools.json ← - (404) - 27.614 ms
+[32mhttp[39m:    GET /app/entry.jsx ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (200) - 80.281 ms
+[32mhttp[39m:    GET /app/index.css ← http://localhost:9000/app/entry.jsx (304) - 2473.580 ms
+[32mhttp[39m:    GET /app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 21.077 ms
+[32mhttp[39m:    GET /app/entry.jsx ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (200) - 13.063 ms
+[32mhttp[39m:    GET /.well-known/appspecific/com.chrome.devtools.json ← - (404) - 36.372 ms
+[32mhttp[39m:    GET /app/index.css ← http://localhost:9000/app/entry.jsx (304) - 505.576 ms
+[32mhttp[39m:    GET /admin/feature-flags ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 33.095 ms
+[32mhttp[39m:    GET /admin/users/me ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 31.631 ms
+[32mhttp[39m:    GET /admin/users/me ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (401) - 2.211 ms
+[32mhttp[39m:    POST /auth/user/emailpass ← http://localhost:9000/app/login (200) - 511.299 ms
+[32mhttp[39m:    POST /auth/session ← http://localhost:9000/app/login (200) - 4.224 ms
+[32mhttp[39m:    GET /admin/users/me ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 42.882 ms
+[32mhttp[39m:    GET /admin/customer-groups?q=&limit=3&fields=id%2Cname ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 118.439 ms
+[32mhttp[39m:    GET /admin/notifications?limit=1&offset=0&fields=created_at ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 144.904 ms
+[32mhttp[39m:    GET /admin/customers?q=&limit=3&fields=id%2Cemail%2Cfirst_name%2Clast_name ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 77.292 ms
+[32mhttp[39m:    GET /admin/product-categories?limit=3&fields=id%2Cname ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 197.385 ms
+[32mhttp[39m:    GET /admin/product-variants?q=&limit=3&fields=id%2Ctitle%2Csku%2Cproduct_id ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 193.524 ms
+[32mhttp[39m:    GET /admin/inventory-items?q=&limit=3&fields=id%2Ctitle%2Csku ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 15.266 ms
+[32mhttp[39m:    GET /admin/collections?q=&limit=3&fields=id%2Ctitle ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 31.704 ms
+[32mhttp[39m:    GET /admin/users?q=&limit=3&fields=id%2Cemail%2Cfirst_name%2Clast_name ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 7.921 ms
+[32mhttp[39m:    GET /admin/orders?q=&limit=3&fields=id%2Cdisplay_id%2Cemail ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 251.210 ms
+[32mhttp[39m:    GET /admin/regions?q=&limit=3&fields=id%2Cname ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 3.383 ms
+[32mhttp[39m:    GET /admin/products?q=&limit=3&fields=id%2Ctitle%2Cthumbnail ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 100.688 ms
+[32mhttp[39m:    GET /admin/stores ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 332.172 ms
+[32mhttp[39m:    GET /admin/promotions?q=&limit=3&fields=id%2Ccode%2Cstatus ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 71.189 ms
+[32mhttp[39m:    GET /admin/campaigns?q=&limit=3&fields=id%2Cname ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 56.391 ms
+[32mhttp[39m:    GET /admin/product-types?q=&limit=3&fields=id%2Cvalue ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 51.373 ms
+[32mhttp[39m:    GET /admin/sales-channels?q=&limit=3&fields=id%2Cname ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 11.083 ms
+[32mhttp[39m:    GET /admin/shipping-profiles?q=&limit=3&fields=id%2Cname ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 40.407 ms
+[32mhttp[39m:    GET /admin/price-lists?q=&limit=3&fields=id%2Ctitle ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 95.852 ms
+[32mhttp[39m:    GET /admin/stock-locations?q=&limit=3&fields=id%2Cname ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 58.946 ms
+[32mhttp[39m:    GET /admin/return-reasons?q=&limit=3&fields=id%2Clabel%2Cvalue ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 87.166 ms
+[32mhttp[39m:    GET /admin/product-tags?q=&limit=3&fields=id%2Cvalue ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 6.191 ms
+[32mhttp[39m:    GET /admin/api-keys?q=&limit=3&fields=id%2Ctitle%2Credacted&type=secret ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 62.213 ms
+[32mhttp[39m:    GET /admin/api-keys?q=&limit=3&fields=id%2Ctitle%2Credacted&type=publishable ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 32.345 ms
+[32mhttp[39m:    GET /admin/tax-regions?q=&limit=3&fields=id%2Ccountry_code%2Cprovince_code ← http://localhost:9000/app/products/prod_01K7E7DZHF5NX3N0Z9PYGP05FW (304) - 79.386 ms

@@ -38,13 +38,11 @@ const MenuCustomizer = () => {
     const checkAndHideMenuItems = () => {
       const menuLinks = document.querySelectorAll('nav a[href*="/app/"]');
 
-      menuLinks.forEach((link, index) => {
+      menuLinks.forEach((link) => {
         const href = link.getAttribute("href");
         if (!href) return;
 
-        const linkText = link.textContent?.trim() || "Unknown";
-
-        let matched = false;
+        let matched: boolean = false;
         for (const route of protectedRoutes) {
           const isExactMatch = href === route.path;
           const isSubRoute = href.startsWith(route.path + "/");
@@ -123,13 +121,6 @@ function hasResourcePermission(
   });
 
   const hasAny = resourcePermissions.some((perm) => permissions.includes(perm));
-
-  if (hasAny) {
-    const found = resourcePermissions.filter((perm) =>
-      permissions.includes(perm)
-    );
-  } else {
-  }
 
   return hasAny;
 }

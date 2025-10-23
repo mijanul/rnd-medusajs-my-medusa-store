@@ -91,8 +91,8 @@ const PagesWidget = () => {
   );
 };
 
-export const config = defineWidgetConfig({
-  zone: "product.list.before",
-});
+// export const config = defineWidgetConfig({
+//   zone: "product.list.before",
+// });
 
 export default PagesWidget;

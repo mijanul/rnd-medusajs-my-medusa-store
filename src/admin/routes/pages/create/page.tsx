@@ -287,8 +287,8 @@ const PageCreatePage = () => {
   );
 };
 
-export const config = defineRouteConfig({
-  label: "Create Page",
-});
+// export const config = defineRouteConfig({
+//   label: "Create Page",
+// });
 
 export default PageCreatePage;

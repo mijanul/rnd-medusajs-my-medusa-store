@@ -6,12 +6,10 @@ const DisableCustomerCreateButton = () => {
   const { hasPermission, loading } = useUserPermissions();
 
   useEffect(() => {
-    // Wait for permissions to load
     if (loading) {
       return;
     }
 
-    // Check if user has the customers create permission
     const hasCreatePermission = hasPermission("customers", "create");
 
     const handleCreateButton = () => {

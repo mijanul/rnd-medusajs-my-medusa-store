@@ -53,7 +53,7 @@ const AccessDeniedPage = () => {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3 mt-4">
+        {/* <div className="flex items-center gap-3 mt-4">
           <Button variant="secondary" onClick={handleGoBack}>
             <ArrowUturnLeft />
             Go Back
@@ -61,7 +61,7 @@ const AccessDeniedPage = () => {
           <Button variant="primary" onClick={handleGoHome}>
             Go to Home
           </Button>
-        </div>
+        </div> */}
 
         {/* Additional Info */}
         <div className="mt-6 p-4 bg-ui-bg-subtle rounded-lg border border-ui-border-base">

@@ -21,6 +21,8 @@ const DisableCustomerCreateButton = () => {
 
       if (createButton) {
         if (CONFIG.mode === "hide") {
+          createButton.style.position = "absolute";
+          createButton.style.zIndex = "-100";
           createButton.style.display = "none";
         } else if (CONFIG.mode === "disable") {
           createButton.style.pointerEvents = "none";

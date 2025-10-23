@@ -1,49 +1,47 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk";
 import { useEffect } from "react";
-
-type ButtonMode = "hide" | "disable" | "default" | "enabled";
-
-const CONFIG = {
-  mode: "hide" as ButtonMode,
-};
+import { useUserPermissions } from "../lib/use-permissions";
 
 const DisableCustomerCreateButton = () => {
+  const { hasPermission, loading } = useUserPermissions();
+
   useEffect(() => {
-    if (CONFIG.mode === "default" || CONFIG.mode === "enabled") {
-      console.log("Customer Create button mode: default (no changes)");
+    // Wait for permissions to load
+    if (loading) {
       return;
     }
 
-    const disableCreateButton = () => {
+    // Check if user has the customers create permission
+    const hasCreatePermission = hasPermission("customers", "create");
+
+    const handleCreateButton = () => {
       const createButton = document.querySelector(
         'a[href="/app/customers/create"]'
       ) as HTMLAnchorElement;
 
       if (createButton) {
-        if (CONFIG.mode === "hide") {
+        if (hasCreatePermission) {
+          // User has permission - ensure button is visible and enabled
+          createButton.style.position = "";
+          createButton.style.zIndex = "";
+          createButton.style.display = "";
+          createButton.style.pointerEvents = "";
+          createButton.style.opacity = "";
+          createButton.style.cursor = "";
+          createButton.removeAttribute("aria-disabled");
+        } else {
+          // User doesn't have permission - hide the button
           createButton.style.position = "absolute";
           createButton.style.zIndex = "-100";
           createButton.style.display = "none";
-        } else if (CONFIG.mode === "disable") {
-          createButton.style.pointerEvents = "none";
-          createButton.style.opacity = "0.5";
-          createButton.style.cursor = "not-allowed";
-          createButton.setAttribute("aria-disabled", "true");
-
-          createButton.removeAttribute("href");
-
-          createButton.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          });
         }
       }
     };
 
-    disableCreateButton();
+    handleCreateButton();
 
     const observer = new MutationObserver(() => {
-      disableCreateButton();
+      handleCreateButton();
     });
 
     observer.observe(document.body, {
@@ -54,7 +52,7 @@ const DisableCustomerCreateButton = () => {
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [hasPermission, loading]);
 
   return null;
 };

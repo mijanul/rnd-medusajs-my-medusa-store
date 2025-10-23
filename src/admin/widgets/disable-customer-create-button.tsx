@@ -1,12 +1,19 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk";
 import { useEffect } from "react";
 
+type ButtonMode = "hide" | "disable" | "default" | "enabled";
+
 const CONFIG = {
-  mode: "hide" as "hide" | "disable",
+  mode: "enabled" as ButtonMode,
 };
 
 const DisableCustomerCreateButton = () => {
   useEffect(() => {
+    if (CONFIG.mode === "default" || CONFIG.mode === "enabled") {
+      console.log("ℹ️ Customer Create button mode: default (no changes)");
+      return;
+    }
+
     const disableCreateButton = () => {
       const createButton = document.querySelector(
         'a[href="/app/customers/create"]'
@@ -14,10 +21,9 @@ const DisableCustomerCreateButton = () => {
 
       if (createButton) {
         if (CONFIG.mode === "hide") {
-          // HIDE MODE: Completely hide the button
           createButton.style.display = "none";
           console.log("✅ Customer Create button hidden");
-        } else {
+        } else if (CONFIG.mode === "disable") {
           createButton.style.pointerEvents = "none";
           createButton.style.opacity = "0.5";
           createButton.style.cursor = "not-allowed";

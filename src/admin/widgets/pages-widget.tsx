@@ -1,4 +1,3 @@
-import { defineWidgetConfig } from "@medusajs/admin-sdk";
 import { Container, Heading, Badge } from "@medusajs/ui";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -90,9 +89,5 @@ const PagesWidget = () => {
     </Container>
   );
 };
-
-// export const config = defineWidgetConfig({
-//   zone: "product.list.before",
-// });
 
 export default PagesWidget;

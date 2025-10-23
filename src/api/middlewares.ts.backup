@@ -1,0 +1,422 @@
+import { defineMiddlewares } from "@medusajs/medusa";
+
+/**
+ * Helper to check permission
+ * Uses dynamic import to avoid module loading issues
+ */
+async function checkPermission(
+  req: any,
+  res: any,
+  permissionName: string
+): Promise<boolean> {
+  const userId = req.auth_context?.actor_id;
+
+  if (!userId) {
+    res.status(401).json({ message: "Unauthorized: No user found" });
+    return false;
+  }
+
+  try {
+    const { userHasPermission } = await import(
+      "../modules/role-management/index.js"
+    );
+    const hasPermission = await userHasPermission(
+      req.scope,
+      userId,
+      permissionName
+    );
+
+    if (!hasPermission) {
+      res.status(403).json({
+        type: "not_allowed",
+        message: `You don't have permission: ${permissionName}`,
+      });
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Permission check error:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error checking permissions" });
+    return false;
+  }
+}
+
+/**
+ * Global middleware configuration for admin routes
+ * This properly intercepts requests and checks permissions BEFORE passing to core handlers
+ */
+export default defineMiddlewares({
+  routes: [
+    // ========== ORDERS PROTECTION ==========
+    {
+      matcher: "/admin/orders",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "orders-list")) {
+            next();
+          }
+        },
+      ],
+    },
+    {
+      matcher: "/admin/orders",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) {
+            return res.status(401).json({ message: "Unauthorized" });
+          }
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "orders-create"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to create orders",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+    {
+      matcher: "/admin/orders/:id",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "orders-view"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to view order details",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+    {
+      matcher: "/admin/orders/:id",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "orders-update"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to update orders",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+    {
+      matcher: "/admin/orders/:id",
+      method: "DELETE",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "orders-delete"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to delete orders",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+
+    // ========== PRODUCTS PROTECTION ==========
+    {
+      matcher: "/admin/products",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "products-list"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to view products",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+    {
+      matcher: "/admin/products",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "products-create"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to create products",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+    {
+      matcher: "/admin/products/:id",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "products-view"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to view product details",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+    {
+      matcher: "/admin/products/:id",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "products-update"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to update products",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+    {
+      matcher: "/admin/products/:id",
+      method: "DELETE",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "products-delete"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to delete products",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+
+    // ========== CUSTOMERS PROTECTION ==========
+    {
+      matcher: "/admin/customers",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "customers-list"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to view customers",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+    {
+      matcher: "/admin/customers",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "customers-create"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to create customers",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+    {
+      matcher: "/admin/customers/:id",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "customers-view"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to view customer details",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+    {
+      matcher: "/admin/customers/:id",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "customers-update"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to update customers",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+    {
+      matcher: "/admin/customers/:id",
+      method: "DELETE",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          const userId = req.auth_context?.actor_id;
+          if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+          const hasPermission = await userHasPermission(
+            req.scope,
+            userId,
+            "customers-delete"
+          );
+
+          if (!hasPermission) {
+            return res.status(403).json({
+              type: "not_allowed",
+              message: "You don't have permission to delete customers",
+            });
+          }
+
+          next();
+        },
+      ],
+    },
+  ],
+});

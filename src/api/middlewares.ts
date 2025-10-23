@@ -1,188 +1,265 @@
-import { defineMiddlewares } from "@medusajs/framework/http";
-import type {
-  MedusaNextFunction,
-  MedusaRequest,
-  MedusaResponse,
-} from "@medusajs/framework/http";
-import { userHasPermission } from "../modules/role-management/utils";
+import { defineMiddlewares } from "@medusajs/medusa";
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 
 /**
- * Generic permission checker factory
- * Creates middleware to check user permissions and return 403 if unauthorized
- *
- * @param resourceName - Display name for error messages (e.g., "customers", "orders")
- * @param permissionResource - Permission resource name to check (e.g., "customers", "orders")
+ * Helper to check permission using the /me/permissions logic
  */
-function createPermissionChecker(
-  resourceName: string,
-  permissionResource: string
-) {
-  return async (
-    req: MedusaRequest,
-    res: MedusaResponse,
-    next: MedusaNextFunction
-  ) => {
-    try {
-      // Get user ID from auth context
-      // @ts-ignore
-      const userId = req.auth_context?.actor_id;
+async function checkPermission(
+  req: any,
+  res: any,
+  permissionName: string
+): Promise<boolean> {
+  const userId = req.auth_context?.actor_id;
 
-      if (!userId) {
-        return res.status(401).json({
-          message: "Unauthorized",
-        });
-      }
+  if (!userId) {
+    res.status(401).json({ message: "Unauthorized: No user found" });
+    return false;
+  }
 
-      // Determine required permission based on HTTP method
-      let requiredAction = "view";
+  try {
+    const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
-      switch (req.method) {
-        case "GET":
-          // Check if it's a detail view (has ID) or list view
-          const urlParts = req.url.split("/").filter(Boolean);
-          const lastPart = urlParts[urlParts.length - 1];
-          // If last part looks like an ID (not a query string), it's a detail view
-          requiredAction =
-            lastPart && !lastPart.includes("?") && lastPart.length > 10
-              ? "view"
-              : "list";
-          break;
-        case "POST":
-          requiredAction = "create";
-          break;
-        case "PUT":
-        case "PATCH":
-          requiredAction = "update";
-          break;
-        case "DELETE":
-          requiredAction = "delete";
-          break;
-      }
+    // Get user's roles
+    const { data: userRoles } = await query.graph({
+      entity: "user_role",
+      fields: ["role_id"],
+      filters: { user_id: userId },
+    });
 
-      // Check if user has the required permission
-      const hasPermission = await userHasPermission(
-        req.scope,
-        userId,
-        `${permissionResource}-${requiredAction}`
-      );
-
-      if (!hasPermission) {
-        return res.status(403).json({
-          message: `Forbidden: You don't have permission to ${requiredAction} ${resourceName}`,
-          required_permission: `${permissionResource}-${requiredAction}`,
-          redirect: `/app/access-denied?resource=${resourceName}&action=${requiredAction}`,
-        });
-      }
-
-      next();
-    } catch (error: any) {
-      console.error(`Error checking ${resourceName} permissions:`, error);
-      return res.status(500).json({
-        message: "Error checking permissions",
-        error: error.message,
+    if (!userRoles || userRoles.length === 0) {
+      res.status(403).json({
+        type: "not_allowed",
+        message: `You don't have permission: ${permissionName}`,
       });
+      return false;
     }
-  };
+
+    const roleIds = userRoles.map((ur: any) => ur.role_id);
+
+    // Get permissions for all user's roles
+    const { data: rolePermissions } = await query.graph({
+      entity: "role_permission",
+      fields: ["permission_id"],
+      filters: { role_id: roleIds },
+    });
+
+    if (!rolePermissions || rolePermissions.length === 0) {
+      res.status(403).json({
+        type: "not_allowed",
+        message: `You don't have permission: ${permissionName}`,
+      });
+      return false;
+    }
+
+    const permissionIds = Array.from(
+      new Set(rolePermissions.map((rp: any) => rp.permission_id))
+    );
+
+    // Get full permission details
+    const { data: permissions } = await query.graph({
+      entity: "permission",
+      fields: ["id", "name", "resource", "action", "description"],
+      filters: { id: permissionIds },
+    });
+
+    // Check if user has the required permission (case-insensitive)
+    const hasPermission = permissions.some(
+      (perm: any) => perm.name.toLowerCase() === permissionName.toLowerCase()
+    );
+
+    if (!hasPermission) {
+      res.status(403).json({
+        type: "not_allowed",
+        message: `You don't have permission: ${permissionName}`,
+      });
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Permission check error:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error checking permissions" });
+    return false;
+  }
 }
 
-// Create permission checkers for each resource
-const checkCustomerPermission = createPermissionChecker(
-  "customers",
-  "customers"
-);
-const checkOrderPermission = createPermissionChecker("orders", "orders");
-const checkDraftOrderPermission = createPermissionChecker(
-  "draft-orders",
-  "orders"
-);
-const checkProductPermission = createPermissionChecker("products", "products");
-const checkInventoryPermission = createPermissionChecker(
-  "inventory",
-  "inventory"
-);
-const checkPromotionPermission = createPermissionChecker(
-  "promotions",
-  "promotions"
-);
-const checkPriceListPermission = createPermissionChecker(
-  "price-lists",
-  "price_lists"
-);
-
 /**
- * Apply middleware to all protected routes
+ * Global middleware configuration for admin routes
+ * This properly intercepts requests and checks permissions BEFORE passing to core handlers
  */
 export default defineMiddlewares({
   routes: [
-    // Customer routes
+    // ========== ORDERS PROTECTION ==========
     {
-      matcher: "/admin/customers*",
-      middlewares: [checkCustomerPermission],
+      matcher: "/admin/orders",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "orders-list")) {
+            next();
+          }
+        },
+      ],
     },
     {
-      matcher: "/admin/customer-groups*",
-      middlewares: [checkCustomerPermission],
-    },
-    // Order routes
-    {
-      matcher: "/admin/orders*",
-      middlewares: [checkOrderPermission],
-    },
-    {
-      matcher: "/admin/draft-orders*",
-      middlewares: [checkDraftOrderPermission],
-    },
-    // Product routes
-    {
-      matcher: "/admin/products*",
-      middlewares: [checkProductPermission],
+      matcher: "/admin/orders",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "orders-create")) {
+            next();
+          }
+        },
+      ],
     },
     {
-      matcher: "/admin/product-categories*",
-      middlewares: [checkProductPermission],
+      matcher: "/admin/orders/:id",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "orders-view")) {
+            next();
+          }
+        },
+      ],
     },
     {
-      matcher: "/admin/product-collections*",
-      middlewares: [checkProductPermission],
+      matcher: "/admin/orders/:id",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "orders-update")) {
+            next();
+          }
+        },
+      ],
     },
     {
-      matcher: "/admin/product-tags*",
-      middlewares: [checkProductPermission],
+      matcher: "/admin/orders/:id",
+      method: "DELETE",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "orders-delete")) {
+            next();
+          }
+        },
+      ],
+    },
+
+    // ========== PRODUCTS PROTECTION ==========
+    {
+      matcher: "/admin/products",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "products-list")) {
+            next();
+          }
+        },
+      ],
     },
     {
-      matcher: "/admin/product-types*",
-      middlewares: [checkProductPermission],
-    },
-    // Inventory routes
-    {
-      matcher: "/admin/inventory-items*",
-      middlewares: [checkInventoryPermission],
-    },
-    {
-      matcher: "/admin/stock-locations*",
-      middlewares: [checkInventoryPermission],
+      matcher: "/admin/products",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "products-create")) {
+            next();
+          }
+        },
+      ],
     },
     {
-      matcher: "/admin/reservations*",
-      middlewares: [checkInventoryPermission],
-    },
-    // Promotion routes
-    {
-      matcher: "/admin/promotions*",
-      middlewares: [checkPromotionPermission],
-    },
-    {
-      matcher: "/admin/campaigns*",
-      middlewares: [checkPromotionPermission],
-    },
-    // Price list routes
-    {
-      matcher: "/admin/price-lists*",
-      middlewares: [checkPriceListPermission],
+      matcher: "/admin/products/:id",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "products-view")) {
+            next();
+          }
+        },
+      ],
     },
     {
-      matcher: "/admin/price-preferences*",
-      middlewares: [checkPriceListPermission],
+      matcher: "/admin/products/:id",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "products-update")) {
+            next();
+          }
+        },
+      ],
+    },
+    {
+      matcher: "/admin/products/:id",
+      method: "DELETE",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "products-delete")) {
+            next();
+          }
+        },
+      ],
+    },
+
+    // ========== CUSTOMERS PROTECTION ==========
+    {
+      matcher: "/admin/customers",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "customers-list")) {
+            next();
+          }
+        },
+      ],
+    },
+    {
+      matcher: "/admin/customers",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "customers-create")) {
+            next();
+          }
+        },
+      ],
+    },
+    {
+      matcher: "/admin/customers/:id",
+      method: "GET",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "customers-view")) {
+            next();
+          }
+        },
+      ],
+    },
+    {
+      matcher: "/admin/customers/:id",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "customers-update")) {
+            next();
+          }
+        },
+      ],
+    },
+    {
+      matcher: "/admin/customers/:id",
+      method: "DELETE",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (await checkPermission(req, res, "customers-delete")) {
+            next();
+          }
+        },
+      ],
     },
   ],
 });

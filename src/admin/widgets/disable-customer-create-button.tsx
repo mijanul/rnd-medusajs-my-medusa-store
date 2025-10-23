@@ -32,6 +32,11 @@ const DisableCustomerCreateButton = () => {
           createButton.style.position = "absolute";
           createButton.style.zIndex = "-100";
           createButton.style.display = "none";
+          createButton.style.top = "-9999px";
+          createButton.style.pointerEvents = "none";
+          createButton.style.opacity = "0";
+          createButton.style.cursor = "not-allowed";
+          createButton.setAttribute("aria-disabled", "true");
         }
       }
     };

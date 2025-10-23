@@ -104,14 +104,15 @@ const MenuCustomizer = () => {
             );
 
             if (!hasPermission) {
-              // Hide the entire menu item
+              // Hide the entire menu item using position absolute and top -9999px
               const menuItem =
                 link.closest("li") ||
                 link.closest("[role='menuitem']") ||
                 link.parentElement;
               if (menuItem) {
                 console.log(`   🚫 HIDING menu item: "${linkText}"`);
-                (menuItem as HTMLElement).style.display = "none";
+                (menuItem as HTMLElement).style.position = "absolute";
+                (menuItem as HTMLElement).style.top = "-9999px";
               }
             } else {
               console.log(`   ✅ SHOWING menu item: "${linkText}"`);

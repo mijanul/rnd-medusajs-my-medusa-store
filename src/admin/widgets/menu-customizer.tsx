@@ -49,7 +49,7 @@ const MenuCustomizer = () => {
       { path: "/app/inventory", resource: "inventory", exact: false },
       { path: "/app/promotions", resource: "promotions", exact: false },
       { path: "/app/pricing", resource: "price_lists", exact: false },
-      { path: "/app/price-lists", resource: "price_lists", exact: false }, // Could be price-lists
+      { path: "/app/price-lists", resource: "price_lists", exact: false },
       { path: "/app/pages", resource: "pages", exact: false },
       { path: "/app/settings", resource: "settings", exact: false },
     ];

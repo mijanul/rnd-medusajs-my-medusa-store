@@ -23,11 +23,9 @@ const CustomerCreatePage = () => {
 
   if (loading) {
     return (
-      <Container className="flex items-center justify-center min-h-[400px]">
-        <div className="flex flex-col items-center gap-4">
-          <Spinner className="animate-spin text-ui-fg-muted" />
-          <Text className="text-ui-fg-subtle">Checking permissions...</Text>
-        </div>
+      <Container className="flex items-center justify-center h-full">
+        <Spinner className="animate-spin text-ui-fg-muted" />
+        <Text className="ml-2 text-ui-fg-muted">Loading permissions...</Text>
       </Container>
     );
   }
@@ -36,13 +34,7 @@ const CustomerCreatePage = () => {
     return <RestrictedAccess resource="customers" action="create" />;
   }
 
-  return (
-    <Container className="flex items-center justify-center min-h-[400px]">
-      <Text className="text-ui-fg-subtle">
-        Loading customer creation form...
-      </Text>
-    </Container>
-  );
+  return null;
 };
 
 export default CustomerCreatePage;

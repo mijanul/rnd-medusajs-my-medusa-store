@@ -4,13 +4,13 @@ import { useEffect } from "react";
 type ButtonMode = "hide" | "disable" | "default" | "enabled";
 
 const CONFIG = {
-  mode: "enabled" as ButtonMode,
+  mode: "hide" as ButtonMode,
 };
 
 const DisableCustomerCreateButton = () => {
   useEffect(() => {
     if (CONFIG.mode === "default" || CONFIG.mode === "enabled") {
-      console.log("ℹ️ Customer Create button mode: default (no changes)");
+      console.log("Customer Create button mode: default (no changes)");
       return;
     }
 
@@ -22,7 +22,6 @@ const DisableCustomerCreateButton = () => {
       if (createButton) {
         if (CONFIG.mode === "hide") {
           createButton.style.display = "none";
-          console.log("✅ Customer Create button hidden");
         } else if (CONFIG.mode === "disable") {
           createButton.style.pointerEvents = "none";
           createButton.style.opacity = "0.5";
@@ -35,8 +34,6 @@ const DisableCustomerCreateButton = () => {
             e.preventDefault();
             e.stopPropagation();
           });
-
-          console.log("✅ Customer Create button disabled");
         }
       }
     };
@@ -52,7 +49,6 @@ const DisableCustomerCreateButton = () => {
       subtree: true,
     });
 
-    // Cleanup observer on unmount
     return () => {
       observer.disconnect();
     };

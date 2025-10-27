@@ -20,5 +20,8 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/role-management",
     },
+    {
+      resolve: "./src/modules/pincode-pricing",
+    },
   ],
 });

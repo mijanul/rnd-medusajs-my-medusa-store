@@ -3,6 +3,7 @@ import { Container, Heading, Badge } from "@medusajs/ui";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Users, ShieldCheck, Key } from "@medusajs/icons";
+// import { defineWidgetConfig } from "@medusajs/admin-sdk";
 
 type Stats = {
   totalRoles: number;
@@ -120,7 +121,7 @@ const RoleManagementWidget = () => {
 };
 
 // export const config = defineWidgetConfig({
-//   zone: "order.list.after",
+//   zone: null,
 // });
 
 export default RoleManagementWidget;

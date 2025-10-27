@@ -20,6 +20,7 @@ const PermissionGuard = () => {
       "/orders": { resource: "orders", action: "list" },
       "/products": { resource: "products", action: "list" },
       "/customers": { resource: "customers", action: "list" },
+      "/customer-groups": { resource: "customers", action: "list" },
       "/inventory": { resource: "inventory", action: "list" },
       "/promotions": { resource: "promotions", action: "list" },
       "/price-lists": { resource: "price_lists", action: "list" },

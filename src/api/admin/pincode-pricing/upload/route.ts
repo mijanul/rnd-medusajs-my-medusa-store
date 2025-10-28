@@ -4,34 +4,104 @@ const PINCODE_PRICING_MODULE = "pincodePricing";
 
 /**
  * POST /admin/pincode-pricing/upload
- * Upload CSV file with pricing data
+ * Upload CSV or Excel file with pricing data
  * New format: Each pincode is a column, prices are in cells
  * NOTE: Works with products directly (no variants)
+ * Supports: .csv, .xlsx, .xls files
  */
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const pricingService = req.scope.resolve(PINCODE_PRICING_MODULE);
 
   try {
-    const body = req.body as { csv_data: string };
-    const csvData = body.csv_data;
+    const body = req.body as { csv_data?: string; file_type?: string };
+    const fileData = body.csv_data;
+    const fileType = body.file_type || "csv"; // csv, xlsx, xls
 
-    if (!csvData) {
+    if (!fileData) {
       return res.status(400).json({
-        message: "CSV data is required",
+        message: "File data is required",
       });
     }
 
-    // Parse CSV - handle both comma and tab separated values
-    const rows = csvData.split("\n").filter((row) => row.trim());
-    if (rows.length < 2) {
-      return res.status(400).json({
-        message: "CSV must contain at least a header row and one data row",
-      });
-    }
+    let rows: string[][];
+    let headers: string[];
 
-    // Detect separator (tab or comma)
-    const separator = rows[0].includes("\t") ? "\t" : ",";
-    const headers = rows[0].split(separator).map((h) => h.trim());
+    // Handle Excel files
+    if (fileType === "xlsx" || fileType === "xls") {
+      const XLSX = await import("xlsx");
+
+      // Convert base64 to buffer if needed
+      const buffer = Buffer.from(fileData, "base64");
+
+      // Read workbook
+      const workbook = XLSX.read(buffer, { type: "buffer" });
+
+      // Get first sheet
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+
+      // Convert to array of arrays
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+        header: 1,
+        defval: "",
+      }) as string[][];
+
+      if (jsonData.length < 2) {
+        return res.status(400).json({
+          message:
+            "Excel file must contain at least a header row and one data row",
+        });
+      }
+
+      rows = jsonData.filter((row) => row.some((cell) => cell !== ""));
+      headers = rows[0].map((h) => String(h).trim());
+    } else {
+      // Handle CSV files
+      // Parse CSV - handle both comma and tab separated values
+      const lines = fileData.split(/\r?\n/).filter((row) => row.trim());
+      if (lines.length < 2) {
+        return res.status(400).json({
+          message: "CSV must contain at least a header row and one data row",
+        });
+      }
+
+      // Detect separator (tab or comma)
+      const separator = lines[0].includes("\t") ? "\t" : ",";
+
+      // Parse CSV with proper quote handling
+      const parseCSVLine = (line: string, sep: string): string[] => {
+        const result: string[] = [];
+        let current = "";
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          const nextChar = line[i + 1];
+
+          if (char === '"') {
+            if (inQuotes && nextChar === '"') {
+              // Escaped quote
+              current += '"';
+              i++; // Skip next quote
+            } else {
+              // Toggle quote state
+              inQuotes = !inQuotes;
+            }
+          } else if (char === sep && !inQuotes) {
+            // Field separator outside quotes
+            result.push(current.trim());
+            current = "";
+          } else {
+            current += char;
+          }
+        }
+        result.push(current.trim());
+        return result;
+      };
+
+      rows = lines.map((line) => parseCSVLine(line, separator));
+      headers = rows[0].map((h) => h.trim());
+    }
 
     // First 3 columns should be: sku, product_id, product_title
     // Remaining columns are pincodes
@@ -66,17 +136,15 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     let skippedRows = 0;
     let processedRows = 0;
 
-    // Process each data row
+    // Process each data row (skip header row)
     for (let i = 1; i < rows.length; i++) {
-      const line = rows[i].trim();
-      if (!line) continue;
+      const values = rows[i];
 
-      const values = line
-        .split(separator)
-        .map((v) => v.trim().replace(/"/g, ""));
+      // Skip empty rows
+      if (!values || values.every((v) => !v)) continue;
 
-      const sku = values[0];
-      const product_id = values[1];
+      const sku = String(values[0] || "").trim();
+      const product_id = String(values[1] || "").trim();
       // values[2] = product_title (not needed for import)
 
       if (!sku || !product_id) {
@@ -87,7 +155,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
       // Process each pincode column (starting from index 3)
       for (let j = 0; j < pincodeColumns.length; j++) {
         const pincode = pincodeColumns[j].trim();
-        const priceValue = values[3 + j]?.trim();
+        const priceValue = String(values[3 + j] || "").trim();
 
         // Skip if price is empty
         if (!priceValue || priceValue === "") {

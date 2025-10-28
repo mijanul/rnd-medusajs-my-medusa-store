@@ -321,5 +321,15 @@ export default defineMiddlewares({
         },
       ],
     },
+    // ========== PINCODE PRICING CSV UPLOAD - INCREASED BODY LIMIT ==========
+    // Large CSV files are read as text on frontend and sent as JSON payload
+    // Need to allow large JSON payloads (500MB) for CSV data containing many products/pincodes
+    {
+      matcher: "/admin/pincode-pricing/upload",
+      method: "POST",
+      bodyParser: {
+        sizeLimit: "500mb",
+      },
+    },
   ],
 });

@@ -11,7 +11,8 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 
   if (!pincode || pincode.length !== 6) {
     return res.status(400).json({
-      message: "Valid 6-digit pincode is required",
+      message: "Please enter a valid 6-digit pincode",
+      is_serviceable: false,
     });
   }
 
@@ -21,10 +22,12 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     const isServiceable = await pricingService.isPincodeServiceable(pincode);
 
     if (!isServiceable) {
-      return res.json({
+      return res.status(404).json({
         pincode,
         is_serviceable: false,
-        message: "Sorry, we don't deliver to this pincode yet",
+        message:
+          "Sorry, we don't serve your area yet. Please check back later or contact support.",
+        error: "PINCODE_NOT_SERVICEABLE",
       });
     }
 
@@ -44,7 +47,10 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     });
   } catch (error) {
     return res.status(404).json({
-      message: error.message,
+      pincode,
+      message:
+        "Sorry, we don't serve your area yet. Please try a different pincode.",
+      error: "PINCODE_NOT_SERVICEABLE",
       is_serviceable: false,
     });
   }

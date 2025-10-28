@@ -45,7 +45,9 @@ class PincodePricingService extends MedusaService({
     const dealers = await this.getDealersForPincode(pincode);
 
     if (dealers.length === 0) {
-      throw new Error(`Pincode ${pincode} is not serviceable`);
+      throw new Error(
+        `We don't serve your area (pincode: ${pincode}) yet. Please try a different pincode or contact support.`
+      );
     }
 
     // Get prices from all available dealers
@@ -59,7 +61,7 @@ class PincodePricingService extends MedusaService({
 
     if (prices.length === 0) {
       throw new Error(
-        `No price found for product ${productId} in pincode ${pincode}`
+        `This product is not available in your area (pincode: ${pincode}) at the moment.`
       );
     }
 

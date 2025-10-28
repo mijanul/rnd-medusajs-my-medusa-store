@@ -115,7 +115,6 @@ export default async function handlePriceSync({
           const existing = await pricingService.listProductPincodePrices({
             product_id: product.id,
             pincode: pincodeDealer.pincode,
-            dealer_id: dealer.id,
           });
 
           if (existing.length > 0) {
@@ -133,7 +132,7 @@ export default async function handlePriceSync({
               product_id: product.id,
               sku: variant.sku || product.handle,
               pincode: pincodeDealer.pincode,
-              dealer_id: dealer.id,
+
               price: priceAmount,
               is_active: true,
             });

@@ -1,5 +1,5 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk";
-import { Container, Heading, Table, Button, Input, toast } from "@medusajs/ui";
+import { Container, Heading, Button, Input, toast } from "@medusajs/ui";
 import { useEffect, useState } from "react";
 
 /**
@@ -7,11 +7,10 @@ import { useEffect, useState } from "react";
  *
  * Displays and manages pincode-based prices for a product.
  * Features:
- * 1. List view of all pincode prices
+ * 1. One price per pincode (applies to all dealers)
  * 2. Search by pincode
  * 3. Edit individual prices
- * 4. Support multiple dealers per pincode
- * 5. Update single pincode price across all dealers
+ * 4. Unique constraint: product_id + pincode
  */
 const ProductPincodePricingWidget = ({ data }: { data: any }) => {
   const [pincodePrices, setPincodePrices] = useState<any[]>([]);
@@ -19,9 +18,12 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const [searchPincode, setSearchPincode] = useState("");
-  const [viewMode, setViewMode] = useState<"list" | "grouped">("list");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newPincodes, setNewPincodes] = useState<
+    Array<{ pincode: string; price: string }>
+  >([{ pincode: "", price: "" }]);
 
   const productId = data?.id;
 
@@ -31,6 +33,8 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
+
+        console.log("Fetching prices for product ID:", productId);
 
         // Fetch pincode prices for this product
         const pricesResponse = await fetch(
@@ -42,8 +46,11 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
 
         if (pricesResponse.ok) {
           const pricesData = await pricesResponse.json();
+          console.log("Fetched prices data:", pricesData);
           setPincodePrices(pricesData.prices || []);
           setFilteredPrices(pricesData.prices || []);
+        } else {
+          console.error("Failed to fetch prices:", pricesResponse.status);
         }
       } catch (error) {
         console.error("Error fetching pincode pricing data:", error);
@@ -93,32 +100,113 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
     }
   };
 
-  const handleBulkPincodeUpdate = async (pincode: string, newPrice: number) => {
+  const handlePriceDelete = async (priceId: string) => {
+    if (!confirm("Are you sure you want to delete this price?")) {
+      return;
+    }
+
     try {
-      const response = await fetch(
-        `/admin/pincode-pricing/update-pincode/${productId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ pincode, price: newPrice }),
-        }
-      );
+      const response = await fetch(`/admin/pincode-pricing/prices/${priceId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        toast.success("Price deleted successfully");
+        setRefreshKey((prev) => prev + 1);
+      } else {
+        toast.error("Failed to delete price");
+      }
+    } catch (error) {
+      console.error("Error deleting price:", error);
+      toast.error("Error deleting price");
+    }
+  };
+
+  const handleAddPincode = () => {
+    setNewPincodes([...newPincodes, { pincode: "", price: "" }]);
+  };
+
+  const handleRemovePincode = (index: number) => {
+    const updated = newPincodes.filter((_, i) => i !== index);
+    setNewPincodes(updated);
+  };
+
+  const handlePincodeChange = (
+    index: number,
+    field: "pincode" | "price",
+    value: string
+  ) => {
+    const updated = [...newPincodes];
+    updated[index][field] = value;
+    setNewPincodes(updated);
+  };
+
+  const handleSavePincodes = async () => {
+    // Validate inputs
+    const validPincodes = newPincodes.filter(
+      (item) => item.pincode.trim() !== "" && item.price.trim() !== ""
+    );
+
+    if (validPincodes.length === 0) {
+      toast.error("Please enter at least one pincode and price");
+      return;
+    }
+
+    // Validate pincode format (6 digits)
+    const invalidPincodes = validPincodes.filter(
+      (item) => !/^\d{6}$/.test(item.pincode.trim())
+    );
+
+    if (invalidPincodes.length > 0) {
+      toast.error("Pincode must be exactly 6 digits");
+      return;
+    }
+
+    // Validate price (positive number)
+    const invalidPrices = validPincodes.filter(
+      (item) => isNaN(parseFloat(item.price)) || parseFloat(item.price) <= 0
+    );
+
+    if (invalidPrices.length > 0) {
+      toast.error("Price must be a positive number");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/admin/pincode-pricing/prices`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          product_id: productId,
+          prices: validPincodes.map((item) => ({
+            pincode: item.pincode.trim(),
+            price: parseFloat(item.price),
+          })),
+        }),
+      });
+
+      console.log("Create request - Product ID:", productId);
+      console.log("Create request - Pincodes:", validPincodes);
 
       if (response.ok) {
         const result = await response.json();
-        toast.success(
-          `Updated ${result.updated_count} prices for pincode ${pincode}`
-        );
+        console.log("Create response:", result);
+        toast.success(`Successfully added ${validPincodes.length} pincode(s)`);
+        setShowAddForm(false);
+        setNewPincodes([{ pincode: "", price: "" }]);
         setRefreshKey((prev) => prev + 1);
       } else {
-        toast.error("Failed to update pincode prices");
+        const error = await response.json();
+        console.error("Create failed:", error);
+        toast.error(error.message || "Failed to add pincodes");
       }
     } catch (error) {
-      console.error("Error updating pincode prices:", error);
-      toast.error("Error updating pincode prices");
+      console.error("Error adding pincodes:", error);
+      toast.error("Error adding pincodes");
     }
   };
 
@@ -165,13 +253,7 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
     return acc;
   }, {} as Record<string, any[]>);
 
-  // Pagination calculations
-  const totalPages = Math.ceil(filteredPrices.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedPrices = filteredPrices.slice(startIndex, endIndex);
-
-  // For grouped view pagination
+  // Pagination calculations for grouped view
   const filteredPincodes = Array.from(
     new Set(filteredPrices.map((p) => p.pincode))
   ).sort();
@@ -190,10 +272,16 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
           <div>
             <Heading level="h2">Pincode-Based Pricing</Heading>
             <p className="text-ui-fg-subtle text-sm mt-1">
-              Manage prices for different pincodes and dealers
+              Manage prices for different pincodes
             </p>
           </div>
           <div className="flex gap-2">
+            <Button
+              variant="secondary"
+              onClick={() => setShowAddForm(!showAddForm)}
+            >
+              {showAddForm ? "Cancel" : "Add Pincode"}
+            </Button>
             <Button
               variant="secondary"
               onClick={handleSyncFromCurrency}
@@ -203,12 +291,65 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
             </Button>
             <Button
               variant="secondary"
-              onClick={() => window.open("/app/pincode-pricing", "_blank")}
+              onClick={() => (window.location.href = "/app/pincode-pricing")}
             >
               Manage via CSV
             </Button>
           </div>
         </div>
+
+        {/* Add Pincode Form */}
+        {showAddForm && (
+          <div className="border rounded-lg p-4 bg-ui-bg-subtle">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold">Add New Pincodes</h3>
+            </div>
+            <div className="space-y-3">
+              {newPincodes.map((item, index) => (
+                <div key={index} className="flex gap-2 items-start">
+                  <div className="flex-1">
+                    <Input
+                      type="text"
+                      placeholder="Pincode (6 digits)"
+                      value={item.pincode}
+                      onChange={(e) =>
+                        handlePincodeChange(index, "pincode", e.target.value)
+                      }
+                      maxLength={6}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="Price (₹)"
+                      value={item.price}
+                      onChange={(e) =>
+                        handlePincodeChange(index, "price", e.target.value)
+                      }
+                    />
+                  </div>
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    onClick={() => handleRemovePincode(index)}
+                    disabled={newPincodes.length === 1}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2 mt-4">
+              <Button variant="secondary" onClick={handleAddPincode}>
+                + Add More
+              </Button>
+              <Button variant="primary" onClick={handleSavePincodes}>
+                Save All
+              </Button>
+            </div>
+          </div>
+        )}
 
         {hasNoPrices ? (
           <div className="border border-dashed rounded-lg p-8 text-center">
@@ -245,7 +386,9 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
                 </Button>
                 <Button
                   variant="secondary"
-                  onClick={() => window.open("/app/pincode-pricing", "_blank")}
+                  onClick={() =>
+                    (window.location.href = "/app/pincode-pricing")
+                  }
                 >
                   Upload CSV
                 </Button>
@@ -254,33 +397,15 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
           </div>
         ) : (
           <div>
-            {/* Search and View Mode Controls */}
-            <div className="mb-4 flex gap-4 items-center">
-              <div className="flex-1">
-                <Input
-                  type="text"
-                  placeholder="Search by pincode (e.g., 110001)"
-                  value={searchPincode}
-                  onChange={(e) => setSearchPincode(e.target.value)}
-                  className="w-full max-w-md"
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant={viewMode === "list" ? "primary" : "secondary"}
-                  onClick={() => setViewMode("list")}
-                  size="small"
-                >
-                  List View
-                </Button>
-                <Button
-                  variant={viewMode === "grouped" ? "primary" : "secondary"}
-                  onClick={() => setViewMode("grouped")}
-                  size="small"
-                >
-                  Grouped View
-                </Button>
-              </div>
+            {/* Search Controls */}
+            <div className="mb-4">
+              <Input
+                type="text"
+                placeholder="Search by pincode (e.g., 110001)"
+                value={searchPincode}
+                onChange={(e) => setSearchPincode(e.target.value)}
+                className="w-full max-w-md"
+              />
             </div>
 
             {/* Statistics */}
@@ -291,48 +416,26 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
                   {Object.keys(pricesByPincode).length}
                 </div>
                 <div>
-                  <span className="font-medium">Total Prices:</span>{" "}
-                  {pincodePrices.length}
-                </div>
-                <div>
                   <span className="font-medium">Showing:</span>{" "}
                   {filteredPrices.length} results
                 </div>
               </div>
             </div>
 
-            {/* List View */}
-            {viewMode === "list" && (
-              <ListView
-                prices={paginatedPrices}
-                onUpdate={handlePriceUpdate}
-                onBulkUpdate={handleBulkPincodeUpdate}
-              />
-            )}
-
             {/* Grouped View */}
-            {viewMode === "grouped" && (
-              <GroupedView
-                pricesByPincode={pricesByPincode}
-                pincodes={paginatedPincodes}
-                onUpdate={handlePriceUpdate}
-                onBulkUpdate={handleBulkPincodeUpdate}
-              />
-            )}
+            <GroupedView
+              pricesByPincode={pricesByPincode}
+              pincodes={paginatedPincodes}
+              onUpdate={handlePriceUpdate}
+              onDelete={handlePriceDelete}
+            />
 
             {/* Pagination Controls */}
             <div className="mt-4 flex justify-between items-center">
               <div className="text-sm text-ui-fg-subtle">
-                Showing{" "}
-                {viewMode === "list"
-                  ? `${startIndex + 1}-${Math.min(
-                      endIndex,
-                      filteredPrices.length
-                    )} of ${filteredPrices.length} prices`
-                  : `${pincodeStartIndex + 1}-${Math.min(
-                      pincodeEndIndex,
-                      filteredPincodes.length
-                    )} of ${filteredPincodes.length} pincodes`}
+                Showing {pincodeStartIndex + 1}-
+                {Math.min(pincodeEndIndex, filteredPincodes.length)} of{" "}
+                {filteredPincodes.length} pincodes
               </div>
               <div className="flex gap-2">
                 <Button
@@ -347,17 +450,13 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
                 </Button>
                 <div className="flex items-center gap-2 px-4">
                   <span className="text-sm">
-                    Page {currentPage} of{" "}
-                    {viewMode === "list" ? totalPages : totalPincodePages}
+                    Page {currentPage} of {totalPincodePages}
                   </span>
                 </div>
                 <Button
                   variant="secondary"
                   size="small"
-                  disabled={
-                    currentPage ===
-                    (viewMode === "list" ? totalPages : totalPincodePages)
-                  }
+                  disabled={currentPage === totalPincodePages}
                   onClick={() => setCurrentPage((prev) => prev + 1)}
                 >
                   Next
@@ -366,61 +465,46 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
             </div>
           </div>
         )}
-
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-900">
-            <strong>💡 Tip:</strong> Pincode pricing is the only pricing
-            mechanism. Each pincode can have multiple dealers. Click "Edit" to
-            update individual prices or "Update All" to change all dealers for a
-            pincode.
-          </p>
-        </div>
       </div>
     </Container>
   );
 };
 
 /**
- * List View Component - Shows all prices in a flat list
+ * Grouped View Component - Shows prices grouped by pincode
  */
-const ListView = ({
-  prices,
+const GroupedView = ({
+  pricesByPincode,
+  pincodes,
   onUpdate,
+  onDelete,
 }: {
-  prices: any[];
+  pricesByPincode: Record<string, any[]>;
+  pincodes: string[];
   onUpdate: (id: string, price: number) => void;
-  onBulkUpdate: (pincode: string, price: number) => void;
+  onDelete: (id: string) => void;
 }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   return (
-    <div className="border rounded-lg overflow-hidden">
-      <Table>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Pincode</Table.HeaderCell>
-            <Table.HeaderCell>Dealer</Table.HeaderCell>
-            <Table.HeaderCell>Price (₹)</Table.HeaderCell>
-            <Table.HeaderCell>Actions</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {prices.length === 0 ? (
-            <Table.Row>
-              <Table.Cell className="text-center py-8">
-                No prices found for the search criteria
-              </Table.Cell>
-            </Table.Row>
-          ) : (
-            prices.map((priceEntry: any) => (
-              <Table.Row key={priceEntry.id}>
-                <Table.Cell>
-                  <span className="font-mono font-medium">
-                    {priceEntry.pincode}
-                  </span>
-                </Table.Cell>
-                <Table.Cell>{priceEntry.dealer?.name || "Unknown"}</Table.Cell>
-                <Table.Cell>
+    <div className="space-y-4">
+      {pincodes.length === 0 ? (
+        <div className="border rounded-lg p-8 text-center">
+          No prices found for the search criteria
+        </div>
+      ) : (
+        pincodes.map((pincode: string) => {
+          const prices = pricesByPincode[pincode];
+          // Should only be one price per pincode now
+          const priceEntry = prices[0];
+
+          return (
+            <div key={pincode} className="border rounded-lg overflow-hidden">
+              <div className="bg-ui-bg-subtle p-4 flex justify-between items-center">
+                <div className="flex items-center gap-4">
+                  <span className="font-mono font-bold text-lg">{pincode}</span>
+                </div>
+                <div className="flex gap-2 items-center">
                   {editingId === priceEntry.id ? (
                     <PriceEditCell
                       priceId={priceEntry.id}
@@ -432,162 +516,28 @@ const ListView = ({
                       onCancel={() => setEditingId(null)}
                     />
                   ) : (
-                    <span>₹{Number(priceEntry.price).toFixed(2)}</span>
-                  )}
-                </Table.Cell>
-                <Table.Cell>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="secondary"
-                      size="small"
-                      onClick={() => setEditingId(priceEntry.id)}
-                      disabled={editingId !== null}
-                    >
-                      Edit
-                    </Button>
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            ))
-          )}
-        </Table.Body>
-      </Table>
-    </div>
-  );
-};
-
-/**
- * Grouped View Component - Shows prices grouped by pincode
- */
-const GroupedView = ({
-  pricesByPincode,
-  pincodes,
-  onUpdate,
-  onBulkUpdate,
-}: {
-  pricesByPincode: Record<string, any[]>;
-  pincodes: string[];
-  onUpdate: (id: string, price: number) => void;
-  onBulkUpdate: (pincode: string, price: number) => void;
-}) => {
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [bulkEditPincode, setBulkEditPincode] = useState<string | null>(null);
-  const [bulkPrice, setBulkPrice] = useState("");
-
-  return (
-    <div className="space-y-4">
-      {pincodes.length === 0 ? (
-        <div className="border rounded-lg p-8 text-center">
-          No prices found for the search criteria
-        </div>
-      ) : (
-        pincodes.map((pincode: string) => {
-          const prices = pricesByPincode[pincode];
-
-          return (
-            <div key={pincode} className="border rounded-lg overflow-hidden">
-              <div className="bg-ui-bg-subtle p-4 flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                  <span className="font-mono font-bold text-lg">{pincode}</span>
-                  <span className="text-sm text-ui-fg-subtle">
-                    {prices.length} dealer(s)
-                  </span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  {bulkEditPincode === pincode ? (
                     <>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={bulkPrice}
-                        onChange={(e) => setBulkPrice(e.target.value)}
-                        placeholder="New price"
-                        className="w-32"
-                        autoFocus
-                      />
+                      <span className="font-semibold text-lg">
+                        ₹{Number(priceEntry.price).toFixed(2)}
+                      </span>
                       <Button
+                        variant="secondary"
                         size="small"
-                        onClick={() => {
-                          const price = parseFloat(bulkPrice);
-                          if (!isNaN(price) && price > 0) {
-                            onBulkUpdate(pincode, price);
-                            setBulkEditPincode(null);
-                            setBulkPrice("");
-                          }
-                        }}
+                        onClick={() => setEditingId(priceEntry.id)}
                       >
-                        Save All
+                        Edit
                       </Button>
                       <Button
+                        variant="danger"
                         size="small"
-                        variant="secondary"
-                        onClick={() => {
-                          setBulkEditPincode(null);
-                          setBulkPrice("");
-                        }}
+                        onClick={() => onDelete(priceEntry.id)}
                       >
-                        Cancel
+                        Delete
                       </Button>
                     </>
-                  ) : (
-                    <Button
-                      size="small"
-                      variant="secondary"
-                      onClick={() => {
-                        setBulkEditPincode(pincode);
-                        setBulkPrice("");
-                      }}
-                    >
-                      Update All Dealers
-                    </Button>
                   )}
                 </div>
               </div>
-              <Table>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>Dealer</Table.HeaderCell>
-                    <Table.HeaderCell>Price (₹)</Table.HeaderCell>
-                    <Table.HeaderCell>Actions</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {prices.map((priceEntry: any) => (
-                    <Table.Row key={priceEntry.id}>
-                      <Table.Cell>
-                        {priceEntry.dealer?.name || "Unknown"}
-                      </Table.Cell>
-                      <Table.Cell>
-                        {editingId === priceEntry.id ? (
-                          <PriceEditCell
-                            priceId={priceEntry.id}
-                            currentPrice={Number(priceEntry.price)}
-                            onUpdate={(id, price) => {
-                              onUpdate(id, price);
-                              setEditingId(null);
-                            }}
-                            onCancel={() => setEditingId(null)}
-                          />
-                        ) : (
-                          <span>₹{Number(priceEntry.price).toFixed(2)}</span>
-                        )}
-                      </Table.Cell>
-                      <Table.Cell>
-                        <Button
-                          variant="secondary"
-                          size="small"
-                          onClick={() => setEditingId(priceEntry.id)}
-                          disabled={
-                            editingId !== null || bulkEditPincode !== null
-                          }
-                        >
-                          Edit
-                        </Button>
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
             </div>
           );
         })

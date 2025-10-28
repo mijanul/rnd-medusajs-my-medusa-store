@@ -117,7 +117,6 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
               product_id,
               sku: variant.sku || product_id,
               pincode,
-              dealer_id: pincodeDealer.dealer_id,
               price: priceAmount,
               is_active: true,
             });

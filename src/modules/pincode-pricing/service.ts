@@ -204,6 +204,55 @@ class PincodePricingService extends MedusaService({
 
     return results;
   }
+
+  /**
+   * Delete all pricing data for a specific product
+   * Used when product is deleted
+   */
+  async deleteProductPricing(productId: string) {
+    const prices = await this.listProductPincodePrices({
+      product_id: productId,
+    });
+
+    if (prices.length === 0) {
+      return { deleted: 0 };
+    }
+
+    const priceIds = prices.map((price) => price.id);
+    await this.deleteProductPincodePrices(priceIds);
+
+    return { deleted: prices.length };
+  }
+
+  /**
+   * Delete all pricing data for a specific pincode
+   */
+  async deletePincodePricing(pincode: string) {
+    const prices = await this.listProductPincodePrices({
+      pincode,
+    });
+
+    if (prices.length === 0) {
+      return { deleted: 0 };
+    }
+
+    const priceIds = prices.map((price) => price.id);
+    await this.deleteProductPincodePrices(priceIds);
+
+    return { deleted: prices.length };
+  }
+
+  /**
+   * Delete specific pricing entries
+   */
+  async deletePricing(priceIds: string[]) {
+    if (priceIds.length === 0) {
+      return { deleted: 0 };
+    }
+
+    await this.deleteProductPincodePrices(priceIds);
+    return { deleted: priceIds.length };
+  }
 }
 
 export default PincodePricingService;

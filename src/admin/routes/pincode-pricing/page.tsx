@@ -99,7 +99,8 @@ const PincodePricingPage = () => {
             </Heading>
             <p className="text-ui-fg-subtle text-sm mb-4">
               Download the template with pincodes as columns, fill in prices for
-              each variant and pincode, then upload it here.
+              each product and pincode, then upload it here. Note: Products do
+              not have variants.
             </p>
           </div>
 
@@ -118,8 +119,8 @@ const PincodePricingPage = () => {
             <Label htmlFor="csv-data">Paste CSV Data</Label>
             <Textarea
               id="csv-data"
-              placeholder="skuvariant_idproduct_titlevariant_title110001400001560001
-SHIRT-S-BLACKvar_123Medusa T-ShirtS / Black299931992899"
+              placeholder="sku	product_id	product_title	110001	400001	560001
+SHIRT-001	prod_123	Medusa T-Shirt	2999	3199	2899"
               value={csvData}
               onChange={(e) => setCsvData(e.target.value)}
               rows={12}
@@ -152,41 +153,24 @@ SHIRT-S-BLACKvar_123Medusa T-ShirtS / Black299931992899"
             </p>
             <ul className="text-sm text-ui-fg-subtle space-y-1 list-disc list-inside">
               <li>
-                <strong>Column 1 - sku</strong>: Product SKU (e.g.,
-                SHIRT-S-BLACK)
+                <strong>Column 1 - sku</strong>: Product SKU (e.g., SHIRT-001)
               </li>
               <li>
-                <strong>Column 2 - variant_id</strong>: Medusa variant ID (from
-                template)
+                <strong>Column 2 - product_id</strong>: Medusa product ID (from
+                database)
               </li>
               <li>
                 <strong>Column 3 - product_title</strong>: Product name (for
-                reference)
+                reference only)
               </li>
               <li>
-                <strong>Column 4 - variant_title</strong>: Variant name (for
-                reference)
+                <strong>Column 4+ - Pincodes</strong>: Each remaining column is
+                a pincode, fill prices in cells
               </li>
-              <li>
-                <strong>Columns 5+ - Pincodes</strong>: Each column header is a
-                6-digit pincode
-              </li>
-              <li>
-                <strong>Cell values</strong>: Price in INR for that
-                variant-pincode combination
-              </li>
-              <li>
-                Leave cells empty if variant not available in that pincode
-              </li>
+              <li>Leave cells empty where product is not available</li>
+              <li>Prices in INR (e.g., 2999 for ₹2999)</li>
+              <li>Tab-separated format (TSV) - best for Excel</li>
             </ul>
-            <div className="mt-3 p-3 bg-ui-bg-base rounded border border-ui-border-strong">
-              <p className="text-xs font-medium mb-2">Example:</p>
-              <pre className="text-xs overflow-x-auto">
-                {`sku              variant_id    product_title    variant_title    110001    400001    560001
-SHIRT-S-BLACK    var_123       Medusa T-Shirt   S / Black        2999      3199      2899
-SHIRT-M-WHITE    var_124       Medusa T-Shirt   M / White        3199      3399      3099`}
-              </pre>
-            </div>
           </div>
         </div>
       </Container>

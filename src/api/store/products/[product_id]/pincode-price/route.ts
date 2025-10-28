@@ -3,11 +3,12 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 const PINCODE_PRICING_MODULE = "pincodePricing";
 
 /**
- * GET /store/products/[variant_id]/pincode-price
+ * GET /store/products/[product_id]/pincode-price
  * Get product price for a specific pincode
+ * NOTE: Works with product_id directly (no variants)
  */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
-  const { variant_id } = req.params;
+  const { product_id } = req.params;
   const pincode = req.query.pincode as string;
 
   if (!pincode || pincode.length !== 6) {
@@ -19,10 +20,10 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const pricingService = req.scope.resolve(PINCODE_PRICING_MODULE);
 
   try {
-    const priceInfo = await pricingService.getProductPrice(variant_id, pincode);
+    const priceInfo = await pricingService.getProductPrice(product_id, pincode);
 
     return res.json({
-      variant_id,
+      product_id,
       pincode,
       price: Number(priceInfo.price) / 100, // Convert paise to rupees
       price_formatted: `₹${(Number(priceInfo.price) / 100).toFixed(2)}`,

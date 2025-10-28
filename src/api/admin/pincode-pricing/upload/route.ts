@@ -6,6 +6,7 @@ const PINCODE_PRICING_MODULE = "pincodePricing";
  * POST /admin/pincode-pricing/upload
  * Upload CSV file with pricing data
  * New format: Each pincode is a column, prices are in cells
+ * NOTE: Works with products directly (no variants)
  */
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const pricingService = req.scope.resolve(PINCODE_PRICING_MODULE);
@@ -32,16 +33,16 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     const separator = rows[0].includes("\t") ? "\t" : ",";
     const headers = rows[0].split(separator).map((h) => h.trim());
 
-    // First 4 columns should be: sku, variant_id, product_title, variant_title
+    // First 3 columns should be: sku, product_id, product_title
     // Remaining columns are pincodes
-    if (headers.length < 5) {
+    if (headers.length < 4) {
       return res.status(400).json({
         message:
-          "CSV must have at least 5 columns: sku, variant_id, product_title, variant_title, and at least one pincode column",
+          "CSV must have at least 4 columns: sku, product_id, product_title, and at least one pincode column",
       });
     }
 
-    const pincodeColumns = headers.slice(4); // All columns after the first 4 are pincodes
+    const pincodeColumns = headers.slice(3); // All columns after the first 3 are pincodes
 
     // Validate pincode format
     const invalidPincodes = pincodeColumns.filter(
@@ -57,7 +58,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
 
     const pricesData: Array<{
       sku: string;
-      variant_id: string;
+      product_id: string;
       pincode: string;
       price: number;
     }> = [];
@@ -75,19 +76,18 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
         .map((v) => v.trim().replace(/"/g, ""));
 
       const sku = values[0];
-      const variant_id = values[1];
+      const product_id = values[1];
       // values[2] = product_title (not needed for import)
-      // values[3] = variant_title (not needed for import)
 
-      if (!sku || !variant_id) {
+      if (!sku || !product_id) {
         skippedRows++;
         continue;
       }
 
-      // Process each pincode column (starting from index 4)
+      // Process each pincode column (starting from index 3)
       for (let j = 0; j < pincodeColumns.length; j++) {
         const pincode = pincodeColumns[j].trim();
-        const priceValue = values[4 + j]?.trim();
+        const priceValue = values[3 + j]?.trim();
 
         // Skip if price is empty
         if (!priceValue || priceValue === "") {
@@ -105,7 +105,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
 
         pricesData.push({
           sku,
-          variant_id,
+          product_id,
           pincode,
           price: priceInPaise,
         });

@@ -6,6 +6,7 @@ const PINCODE_PRICING_MODULE = "pincodePricing";
  * GET /admin/pincode-pricing/template
  * Download CSV template for pricing upload
  * New format: Each pincode is a column, prices are filled in cells
+ * NOTE: Works with products directly (no variants)
  */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   try {
@@ -22,15 +23,15 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     // Get product_id from query if specified, otherwise get all products
     const productId = req.query.product_id as string;
 
-    // Get product variants
+    // Get products (no variants needed)
     const filter: any = {};
     if (productId) {
-      filter.product_id = productId;
+      filter.id = productId;
     }
 
-    const variants = await productService.listProductVariants(filter, {
-      select: ["id", "sku", "title", "product_id"],
-      relations: ["product"],
+    const products = await productService.listProducts(filter, {
+      select: ["id", "handle", "title"],
+      take: 1000, // Limit to prevent huge CSVs
     });
 
     // Define pincodes as columns
@@ -53,21 +54,19 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     // Build CSV template with pincodes as columns
     const headers = [
       "sku",
-      "variant_id",
+      "product_id",
       "product_title",
-      "variant_title",
       ...pincodes, // Each pincode becomes a column
     ];
 
-    // Generate rows - one row per variant
+    // Generate rows - one row per product
     const rows: string[][] = [];
 
-    for (const variant of variants) {
+    for (const product of products) {
       const row = [
-        variant.sku || "",
-        variant.id,
-        variant.product?.title || "",
-        variant.title || "",
+        product.handle || product.id, // Use handle as SKU
+        product.id,
+        product.title || "",
         ...pincodes.map(() => ""), // Empty price cells for each pincode
       ];
       rows.push(row);

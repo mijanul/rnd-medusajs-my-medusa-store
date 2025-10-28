@@ -38,8 +38,9 @@ class PincodePricingService extends MedusaService({
   /**
    * Get product price for a specific pincode
    * Returns the best available dealer price
+   * NOTE: Works with product_id directly (no variants)
    */
-  async getProductPrice(variantId: string, pincode: string) {
+  async getProductPrice(productId: string, pincode: string) {
     // Get all dealers for this pincode
     const dealers = await this.getDealersForPincode(pincode);
 
@@ -50,7 +51,7 @@ class PincodePricingService extends MedusaService({
     // Get prices from all available dealers
     const dealerIds = dealers.map((pd) => pd.dealer.id);
     const prices = await this.listProductPincodePrices({
-      variant_id: variantId,
+      product_id: productId,
       pincode,
       dealer_id: dealerIds,
       is_active: true,
@@ -58,7 +59,7 @@ class PincodePricingService extends MedusaService({
 
     if (prices.length === 0) {
       throw new Error(
-        `No price found for variant ${variantId} in pincode ${pincode}`
+        `No price found for product ${productId} in pincode ${pincode}`
       );
     }
 
@@ -96,11 +97,12 @@ class PincodePricingService extends MedusaService({
 
   /**
    * Bulk import prices from CSV data
+   * NOTE: Works with product_id directly (no variants)
    */
   async bulkImportPrices(
     pricesData: Array<{
       sku: string;
-      variant_id: string;
+      product_id: string;
       pincode: string;
       dealer_code: string;
       price: number;
@@ -124,7 +126,7 @@ class PincodePricingService extends MedusaService({
 
         // Create or update price
         await this.createProductPincodePrices({
-          variant_id: data.variant_id,
+          product_id: data.product_id,
           sku: data.sku,
           pincode: data.pincode,
           dealer_id: dealers[0].id,
@@ -144,12 +146,13 @@ class PincodePricingService extends MedusaService({
 
   /**
    * Bulk import prices from CSV data (simplified without dealer)
-   * Each price entry is for a specific variant and pincode
+   * Each price entry is for a specific product and pincode
+   * NOTE: Works with product_id directly (no variants)
    */
   async bulkImportPricesSimple(
     pricesData: Array<{
       sku: string;
-      variant_id: string;
+      product_id: string;
       pincode: string;
       price: number;
     }>
@@ -180,7 +183,7 @@ class PincodePricingService extends MedusaService({
       try {
         // Create or update price with default dealer
         await this.createProductPincodePrices({
-          variant_id: data.variant_id,
+          product_id: data.product_id,
           sku: data.sku,
           pincode: data.pincode,
           dealer_id: defaultDealer.id,

@@ -3,12 +3,13 @@ import Dealer from "./dealer";
 
 /**
  * Product Pincode Pricing
- * Stores product variant prices for each pincode-dealer combination
+ * Stores product prices for each pincode-dealer combination
+ * NOTE: No variants - pricing is directly linked to products
  */
 const ProductPincodePrice = model.define("product_pincode_price", {
   id: model.id().primaryKey(),
-  variant_id: model.text(), // Links to product_variant.id
-  sku: model.text(), // For easier CSV mapping
+  product_id: model.text(), // Links to product.id
+  sku: model.text(), // For easier CSV mapping (product SKU)
   pincode: model.text(), // 6-digit pincode
   dealer: model.belongsTo(() => Dealer, {
     mappedBy: "prices",

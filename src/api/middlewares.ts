@@ -261,5 +261,65 @@ export default defineMiddlewares({
         },
       ],
     },
+
+    // ========== DISABLE PRODUCT VARIANTS ==========
+    // Block variant creation endpoint
+    {
+      matcher: "/admin/products/:id/variants",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          return res.status(403).json({
+            message:
+              "Variant creation is disabled. This store uses single-SKU products only.",
+            type: "not_allowed",
+          });
+        },
+      ],
+    },
+    // Block variant update/delete endpoints
+    {
+      matcher: "/admin/products/:id/variants/:variantId",
+      method: ["POST", "DELETE"],
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          return res.status(403).json({
+            message:
+              "Variant operations are disabled. This store uses single-SKU products only.",
+            type: "not_allowed",
+          });
+        },
+      ],
+    },
+    // Remove variants/options from product creation
+    {
+      matcher: "/admin/products",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (req.body && typeof req.body === "object") {
+            // Remove variants and options from request
+            delete req.body.variants;
+            delete req.body.options;
+          }
+          next();
+        },
+      ],
+    },
+    // Remove variants/options from product updates
+    {
+      matcher: "/admin/products/:id",
+      method: "POST",
+      middlewares: [
+        async (req: any, res: any, next: any) => {
+          if (req.body && typeof req.body === "object") {
+            // Remove variants and options from request
+            delete req.body.variants;
+            delete req.body.options;
+          }
+          next();
+        },
+      ],
+    },
   ],
 });

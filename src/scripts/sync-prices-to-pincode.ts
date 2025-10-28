@@ -83,8 +83,8 @@ export default async function syncPricesToPincode({ container }: ExecArgs) {
         continue;
       }
 
-      // Convert from minor units to major units
-      const priceAmount = Number(inrPrice.amount) / 100;
+      // Use the price amount directly (no conversion needed)
+      const priceAmount = Number(inrPrice.amount);
       console.log(`  💰 Price: ₹${priceAmount}`);
 
       let productCreated = 0;

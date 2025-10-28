@@ -101,7 +101,7 @@ export default async function checkPricingSetup({ container }: ExecArgs) {
         console.log("   ⚠️ No prices found!");
       } else {
         prices.forEach((p: any) => {
-          const amount = Number(p.amount) / 100;
+          const amount = Number(p.amount);
           console.log(`   - ${p.currency_code.toUpperCase()}: ${amount}`);
         });
       }

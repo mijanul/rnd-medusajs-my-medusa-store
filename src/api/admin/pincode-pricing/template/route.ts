@@ -92,7 +92,6 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       ];
       rows.push(row);
     }
-
     // Check if user wants Excel format
     const format = (req.query.format as string) || "csv";
 

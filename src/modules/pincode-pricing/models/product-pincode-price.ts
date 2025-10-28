@@ -14,7 +14,7 @@ const ProductPincodePrice = model.define("product_pincode_price", {
   dealer: model.belongsTo(() => Dealer, {
     mappedBy: "prices",
   }),
-  price: model.bigNumber(), // Price in paise (smallest unit of INR)
+  price: model.bigNumber(), // Price as decimal (e.g., 24.00, 98.30)
   is_active: model.boolean().default(true),
 });
 

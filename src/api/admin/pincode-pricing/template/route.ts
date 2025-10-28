@@ -87,8 +87,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
         ...pincodes.map((pincode) => {
           // If price exists for this product-pincode combination, show it
           const price = productPrices?.get(pincode);
-          // Convert from paise to decimal (divide by 100)
-          return price ? String(price / 100) : "";
+          return price ? String(price) : "";
         }),
       ];
       rows.push(row);

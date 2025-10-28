@@ -168,14 +168,12 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
           continue; // Skip invalid prices
         }
 
-        // Convert price to paise (smallest unit)
-        const priceInPaise = Math.round(priceFloat * 100);
-
+        // Store price as-is (database supports decimals)
         pricesData.push({
           sku,
           product_id,
           pincode,
-          price: priceInPaise,
+          price: priceFloat,
         });
       }
 

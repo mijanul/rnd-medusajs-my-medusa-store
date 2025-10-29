@@ -72,6 +72,22 @@ const HideProductVariantsWidget = () => {
       [role="columnheader"][data-column-index="1"] {
         display: none !important;
       }
+
+      /* Hide the "Price INR" column header */
+      div[role="columnheader"][data-column-index="6"] {
+        display: none !important;
+      }
+
+      /* Hide the "Price INR" grid cell */
+      div[role="gridcell"][data-column-index="6"] {
+        display: none !important;
+      }
+
+      /* Alternative selector for Price INR column */
+      [role="columnheader"][data-column-index="6"],
+      [role="gridcell"][data-column-index="6"] {
+        display: none !important;
+      }
     `;
 
     document.head.appendChild(style);
@@ -141,6 +157,20 @@ const HideProductVariantsWidget = () => {
       // Hide "Default variant" grid cells (data-column-index="1")
       document
         .querySelectorAll('[role="gridcell"][data-column-index="1"]')
+        .forEach((cell) => {
+          (cell as HTMLElement).style.display = "none";
+        });
+
+      // Hide "Price INR" column header (data-column-index="6")
+      document
+        .querySelectorAll('[role="columnheader"][data-column-index="6"]')
+        .forEach((header) => {
+          (header as HTMLElement).style.display = "none";
+        });
+
+      // Hide "Price INR" grid cells (data-column-index="6")
+      document
+        .querySelectorAll('[role="gridcell"][data-column-index="6"]')
         .forEach((cell) => {
           (cell as HTMLElement).style.display = "none";
         });

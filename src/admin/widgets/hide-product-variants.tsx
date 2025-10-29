@@ -46,6 +46,16 @@ const HideProductVariantsWidget = () => {
       [role="tab"] a[href$="/variants"] {
         display: none !important;
       }
+
+      /* Hide Variants card/section - target by heading */
+      .shadow-elevation-card-rest:has(h1:contains("Variants")) {
+        display: none !important;
+      }
+
+      /* Hide variants table and card container */
+      div.shadow-elevation-card-rest:has(.txt-compact-small-plus:contains("Variants")) {
+        display: none !important;
+      }
     `;
 
     document.head.appendChild(style);
@@ -82,6 +92,28 @@ const HideProductVariantsWidget = () => {
           (parentLi as HTMLElement).style.display = "none";
         }
       });
+
+      // Hide variants card by looking for h1 with "Variants" text
+      document.querySelectorAll("h1").forEach((heading) => {
+        if (heading.textContent?.trim() === "Variants") {
+          // Find the closest card container
+          const card = heading.closest(".shadow-elevation-card-rest");
+          if (card) {
+            (card as HTMLElement).style.display = "none";
+          }
+        }
+      });
+
+      // Hide variants table containers
+      document
+        .querySelectorAll(".shadow-elevation-card-rest")
+        .forEach((card) => {
+          const hasVariantsHeading =
+            card.querySelector("h1")?.textContent?.trim() === "Variants";
+          if (hasVariantsHeading) {
+            (card as HTMLElement).style.display = "none";
+          }
+        });
     };
 
     // Run immediately

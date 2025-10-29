@@ -122,10 +122,9 @@ export default async function syncPricesToPincode({ container }: ExecArgs) {
                 product_id: product.id,
                 sku: variant.sku || product.handle,
                 pincode: pincodeDealer.pincode,
-                dealer_id: dealer.id,
                 price: priceAmount,
                 is_active: true,
-              });
+              } as any);
               productCreated++;
               totalCreated++;
             }

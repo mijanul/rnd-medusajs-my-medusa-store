@@ -31,7 +31,7 @@ export default async function verifyPrices({ container }: ExecArgs) {
       console.log(
         `${price.product_id.substring(0, 25)}...\t${
           price.pincode
-        }\t\t₹${priceInINR}\t\t${price.dealer.name}`
+        }\t\t₹${priceInINR}`
       );
     }
 

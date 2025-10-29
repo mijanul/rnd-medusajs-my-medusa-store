@@ -1,0 +1,1314 @@
+{
+  "metadata": {
+    "timestamp": "2025-10-29T14:21:04.971Z",
+    "version": "1.0.0",
+    "description": "Pre-migration backup of pincode pricing system"
+  },
+  "data": {
+    "products": [
+      {
+        "id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "title": "test",
+        "handle": "test",
+        "created_at": "2025-10-28T10:24:53.767Z"
+      },
+      {
+        "id": "prod_01K8R10WFEC8YWZVVMDRH7BXZH",
+        "title": "hg",
+        "handle": "hg",
+        "created_at": "2025-10-29T13:02:55.472Z"
+      },
+      {
+        "id": "prod_01K8R318HTG3S3HFFN7FRK75D0",
+        "title": "kj",
+        "handle": "kj",
+        "created_at": "2025-10-29T13:38:04.989Z"
+      }
+    ],
+    "dealers": [
+      {
+        "id": "01K8JGA939D9QK12SKE4QKPSED",
+        "name": "Mumbai Warehouse",
+        "code": "DEALER_MUMBAI",
+        "contact_name": "Rajesh Kumar",
+        "contact_email": "rajesh@mumbaiwarehouse.com",
+        "contact_phone": "+91-98765-43210",
+        "address": "Andheri East, Mumbai, Maharashtra",
+        "is_active": true,
+        "created_at": "2025-10-27T09:34:45.353Z",
+        "updated_at": "2025-10-27T09:34:45.353Z",
+        "deleted_at": null
+      },
+      {
+        "id": "01K8JGA939KZH1FY7E04NE95P1",
+        "name": "Chennai Supplier",
+        "code": "DEALER_CHENNAI",
+        "contact_name": "Kumar Swamy",
+        "contact_email": "kumar@chennasupp.com",
+        "contact_phone": "+91-98765-43213",
+        "address": "T Nagar, Chennai, Tamil Nadu",
+        "is_active": true,
+        "created_at": "2025-10-27T09:34:45.353Z",
+        "updated_at": "2025-10-27T09:34:45.353Z",
+        "deleted_at": null
+      },
+      {
+        "id": "01K8JGA939RV665JQ67Y93R383",
+        "name": "Bangalore Store",
+        "code": "DEALER_BANGALORE",
+        "contact_name": "Priya Reddy",
+        "contact_email": "priya@blrstore.com",
+        "contact_phone": "+91-98765-43212",
+        "address": "Koramangala, Bangalore, Karnataka",
+        "is_active": true,
+        "created_at": "2025-10-27T09:34:45.353Z",
+        "updated_at": "2025-10-27T09:34:45.353Z",
+        "deleted_at": null
+      },
+      {
+        "id": "01K8JGA939WXKYE708F241JA81",
+        "name": "Delhi Distributor",
+        "code": "DEALER_DELHI",
+        "contact_name": "Amit Sharma",
+        "contact_email": "amit@delhidist.com",
+        "contact_phone": "+91-98765-43211",
+        "address": "Connaught Place, New Delhi",
+        "is_active": true,
+        "created_at": "2025-10-27T09:34:45.353Z",
+        "updated_at": "2025-10-27T09:34:45.353Z",
+        "deleted_at": null
+      },
+      {
+        "id": "01K8JGMNQKDF15MWD4DGH19JNH",
+        "name": "Bangalore Store - Koramangala",
+        "code": "DEALER_BANGALORE_1",
+        "contact_name": "Priya Reddy",
+        "contact_email": "priya@blrstore.com",
+        "contact_phone": "+91-98765-43212",
+        "address": "Koramangala, Bangalore, Karnataka",
+        "is_active": true,
+        "created_at": "2025-10-27T09:40:25.972Z",
+        "updated_at": "2025-10-27T09:40:25.972Z",
+        "deleted_at": null
+      },
+      {
+        "id": "01K8JGMNQKQRC8DG1MB3KC0FER",
+        "name": "Bangalore Store - Indiranagar",
+        "code": "DEALER_BANGALORE_3",
+        "contact_name": "Lakshmi Rao",
+        "contact_email": "lakshmi@blrindiranagar.com",
+        "contact_phone": "+91-98765-43215",
+        "address": "Indiranagar, Bangalore, Karnataka",
+        "is_active": true,
+        "created_at": "2025-10-27T09:40:25.972Z",
+        "updated_at": "2025-10-27T09:40:25.972Z",
+        "deleted_at": null
+      },
+      {
+        "id": "01K8JGMNQKSYX4MJKSTNXME4ES",
+        "name": "Bangalore Store - Whitefield",
+        "code": "DEALER_BANGALORE_2",
+        "contact_name": "Suresh Kumar",
+        "contact_email": "suresh@blrwhitefield.com",
+        "contact_phone": "+91-98765-43214",
+        "address": "Whitefield, Bangalore, Karnataka",
+        "is_active": true,
+        "created_at": "2025-10-27T09:40:25.972Z",
+        "updated_at": "2025-10-27T09:40:25.972Z",
+        "deleted_at": null
+      },
+      {
+        "id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "name": "Default Dealer",
+        "code": "DEFAULT",
+        "contact_name": null,
+        "contact_email": null,
+        "contact_phone": null,
+        "address": null,
+        "is_active": true,
+        "created_at": "2025-10-28T06:31:10.802Z",
+        "updated_at": "2025-10-28T06:31:10.802Z",
+        "deleted_at": null
+      }
+    ],
+    "pincodeDealers": [
+      {
+        "id": "0114160D2BBA08AA2E4F02F22655",
+        "pincode": "400051",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "01162D3B0F37B74F6357AC00C430",
+        "pincode": "110002",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "0120BB1E1B3AF91EB53EED9E01D9",
+        "pincode": "560038",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "0124DF8DA0ABF91990474552882A",
+        "pincode": "560100",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "01318FFE693689E5AD81347F3979",
+        "pincode": "560001",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "013C3D53336535F7D3F00293F95B",
+        "pincode": "600002",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "013D7A91C5E1DDF7B058FAD62B58",
+        "pincode": "400002",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "015F8E88EA115DBC979A454FBBBC",
+        "pincode": "400101",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "016A9A76662183AA21DAC8860C2F",
+        "pincode": "600001",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "018789F55D2F77E79711F444264B",
+        "pincode": "400001",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "0197AF91534F4C067363CB82EA42",
+        "pincode": "110011",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "01A0E18633A68E380E7CD71B78C6",
+        "pincode": "110096",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "01CAC196400763C54C23EAB91810",
+        "pincode": "560002",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "01CF87F8B475DDCC3E82B194B138",
+        "pincode": "560066",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "01ED2AAE37206C374597CE90EF11",
+        "pincode": "110016",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "01FD51C4F4F4D321BDE2F8A403CA",
+        "pincode": "600017",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "01FDB4E1903C4812F457E01DABD0",
+        "pincode": "110001",
+        "dealer_id": "01K8MR6VPF60DDJCRWW92DP4KD",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-28T06:54:35.994Z",
+        "updated_at": "2025-10-28T06:54:35.994Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8MR6VPF60DDJCRWW92DP4KD"
+        }
+      },
+      {
+        "id": "01K8JGA93PHWNJ0K16SJT9MNRC",
+        "pincode": "400002",
+        "dealer_id": "01K8JGA939D9QK12SKE4QKPSED",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939D9QK12SKE4QKPSED"
+        }
+      },
+      {
+        "id": "01K8JGA93PVDP9XAT469CR0ZD6",
+        "pincode": "400001",
+        "dealer_id": "01K8JGA939D9QK12SKE4QKPSED",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939D9QK12SKE4QKPSED"
+        }
+      },
+      {
+        "id": "01K8JGA93PW51P8A5AMJH2RWHR",
+        "pincode": "400051",
+        "dealer_id": "01K8JGA939D9QK12SKE4QKPSED",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939D9QK12SKE4QKPSED"
+        }
+      },
+      {
+        "id": "01K8JGA93PWN9MH5Y6CK2PYCMN",
+        "pincode": "110001",
+        "dealer_id": "01K8JGA939WXKYE708F241JA81",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939WXKYE708F241JA81"
+        }
+      },
+      {
+        "id": "01K8JGA93PXXG24HHV2992JN67",
+        "pincode": "400101",
+        "dealer_id": "01K8JGA939D9QK12SKE4QKPSED",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939D9QK12SKE4QKPSED"
+        }
+      },
+      {
+        "id": "01K8JGA93Q4N3D89J2HW730XZD",
+        "pincode": "560100",
+        "dealer_id": "01K8JGA939RV665JQ67Y93R383",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939RV665JQ67Y93R383"
+        }
+      },
+      {
+        "id": "01K8JGA93Q754Q33SJM0NMB7R3",
+        "pincode": "110096",
+        "dealer_id": "01K8JGA939WXKYE708F241JA81",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939WXKYE708F241JA81"
+        }
+      },
+      {
+        "id": "01K8JGA93QF82NNP3Z65QW42DF",
+        "pincode": "560001",
+        "dealer_id": "01K8JGA939RV665JQ67Y93R383",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939RV665JQ67Y93R383"
+        }
+      },
+      {
+        "id": "01K8JGA93QFZ0ERZMYJ44Q1CZK",
+        "pincode": "600002",
+        "dealer_id": "01K8JGA939KZH1FY7E04NE95P1",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939KZH1FY7E04NE95P1"
+        }
+      },
+      {
+        "id": "01K8JGA93QQ8EW4JD8XF0KAQBX",
+        "pincode": "110002",
+        "dealer_id": "01K8JGA939WXKYE708F241JA81",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939WXKYE708F241JA81"
+        }
+      },
+      {
+        "id": "01K8JGA93QQNT16PKFQYKBH4G4",
+        "pincode": "400001",
+        "dealer_id": "01K8JGA939WXKYE708F241JA81",
+        "delivery_days": 4,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939WXKYE708F241JA81"
+        }
+      },
+      {
+        "id": "01K8JGA93QVZR59GQJ6JRGAHYP",
+        "pincode": "600001",
+        "dealer_id": "01K8JGA939KZH1FY7E04NE95P1",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939KZH1FY7E04NE95P1"
+        }
+      },
+      {
+        "id": "01K8JGA93QW3YG13TF1CRM9JF9",
+        "pincode": "110016",
+        "dealer_id": "01K8JGA939WXKYE708F241JA81",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939WXKYE708F241JA81"
+        }
+      },
+      {
+        "id": "01K8JGA93QZ7FTJKKRDXZY6344",
+        "pincode": "560002",
+        "dealer_id": "01K8JGA939RV665JQ67Y93R383",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939RV665JQ67Y93R383"
+        }
+      },
+      {
+        "id": "01K8JGA93QZW5886HDX0K87FVQ",
+        "pincode": "600017",
+        "dealer_id": "01K8JGA939KZH1FY7E04NE95P1",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:34:45.367Z",
+        "updated_at": "2025-10-27T09:34:45.367Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939KZH1FY7E04NE95P1"
+        }
+      },
+      {
+        "id": "01K8JGMNQT3C1X9D5CFNRSJQ37",
+        "pincode": "400101",
+        "dealer_id": "01K8JGA939D9QK12SKE4QKPSED",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939D9QK12SKE4QKPSED"
+        }
+      },
+      {
+        "id": "01K8JGMNQT6SD13FQS74CK668S",
+        "pincode": "110016",
+        "dealer_id": "01K8JGA939WXKYE708F241JA81",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939WXKYE708F241JA81"
+        }
+      },
+      {
+        "id": "01K8JGMNQTA5D3X7R6VMY25F4S",
+        "pincode": "560001",
+        "dealer_id": "01K8JGMNQKSYX4MJKSTNXME4ES",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGMNQKSYX4MJKSTNXME4ES"
+        }
+      },
+      {
+        "id": "01K8JGMNQTCRSQ60C0M4AXKHJ9",
+        "pincode": "400001",
+        "dealer_id": "01K8JGA939D9QK12SKE4QKPSED",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939D9QK12SKE4QKPSED"
+        }
+      },
+      {
+        "id": "01K8JGMNQTHTRG6PMVQM2R556D",
+        "pincode": "110001",
+        "dealer_id": "01K8JGA939WXKYE708F241JA81",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939WXKYE708F241JA81"
+        }
+      },
+      {
+        "id": "01K8JGMNQTKWMB0Q0PJEFBH55T",
+        "pincode": "560100",
+        "dealer_id": "01K8JGMNQKDF15MWD4DGH19JNH",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGMNQKDF15MWD4DGH19JNH"
+        }
+      },
+      {
+        "id": "01K8JGMNQTPAKS1G0Z7XM84S38",
+        "pincode": "400051",
+        "dealer_id": "01K8JGA939D9QK12SKE4QKPSED",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939D9QK12SKE4QKPSED"
+        }
+      },
+      {
+        "id": "01K8JGMNQTPSDVSM86FW6BYGJ3",
+        "pincode": "560001",
+        "dealer_id": "01K8JGMNQKDF15MWD4DGH19JNH",
+        "delivery_days": 1,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGMNQKDF15MWD4DGH19JNH"
+        }
+      },
+      {
+        "id": "01K8JGMNQTPY025A0EAHXSS34G",
+        "pincode": "110096",
+        "dealer_id": "01K8JGA939WXKYE708F241JA81",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939WXKYE708F241JA81"
+        }
+      },
+      {
+        "id": "01K8JGMNQTQRCGBENQFWJMW8TN",
+        "pincode": "110002",
+        "dealer_id": "01K8JGA939WXKYE708F241JA81",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939WXKYE708F241JA81"
+        }
+      },
+      {
+        "id": "01K8JGMNQTT6K5ASRCCKZTYZPT",
+        "pincode": "400002",
+        "dealer_id": "01K8JGA939D9QK12SKE4QKPSED",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939D9QK12SKE4QKPSED"
+        }
+      },
+      {
+        "id": "01K8JGMNQTZ8JDVPF0P7QRY4SD",
+        "pincode": "560002",
+        "dealer_id": "01K8JGMNQKDF15MWD4DGH19JNH",
+        "delivery_days": 1,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGMNQKDF15MWD4DGH19JNH"
+        }
+      },
+      {
+        "id": "01K8JGMNQV3ZWZJHPQWD9FPADM",
+        "pincode": "560100",
+        "dealer_id": "01K8JGMNQKSYX4MJKSTNXME4ES",
+        "delivery_days": 1,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGMNQKSYX4MJKSTNXME4ES"
+        }
+      },
+      {
+        "id": "01K8JGMNQV4NMTREZ5QZR46CM7",
+        "pincode": "560002",
+        "dealer_id": "01K8JGMNQKSYX4MJKSTNXME4ES",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": false,
+        "priority": 2,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGMNQKSYX4MJKSTNXME4ES"
+        }
+      },
+      {
+        "id": "01K8JGMNQV9MWFVKHRWXR6662G",
+        "pincode": "600017",
+        "dealer_id": "01K8JGA939KZH1FY7E04NE95P1",
+        "delivery_days": 3,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.980Z",
+        "updated_at": "2025-10-27T09:40:25.980Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939KZH1FY7E04NE95P1"
+        }
+      },
+      {
+        "id": "01K8JGMNQVCCP696AJ3E93QD65",
+        "pincode": "600002",
+        "dealer_id": "01K8JGA939KZH1FY7E04NE95P1",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.980Z",
+        "updated_at": "2025-10-27T09:40:25.980Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939KZH1FY7E04NE95P1"
+        }
+      },
+      {
+        "id": "01K8JGMNQVCK8CQP8PAD2V173J",
+        "pincode": "560038",
+        "dealer_id": "01K8JGMNQKQRC8DG1MB3KC0FER",
+        "delivery_days": 1,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGMNQKQRC8DG1MB3KC0FER"
+        }
+      },
+      {
+        "id": "01K8JGMNQVJBBGFTS39VFYY0Q1",
+        "pincode": "600001",
+        "dealer_id": "01K8JGA939KZH1FY7E04NE95P1",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939KZH1FY7E04NE95P1"
+        }
+      },
+      {
+        "id": "01K8JGMNQVR678WSYZZ84CTSD2",
+        "pincode": "560066",
+        "dealer_id": "01K8JGMNQKSYX4MJKSTNXME4ES",
+        "delivery_days": 1,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGMNQKSYX4MJKSTNXME4ES"
+        }
+      },
+      {
+        "id": "01K8JGMNQVSW72E52BQ4MABF9Z",
+        "pincode": "560002",
+        "dealer_id": "01K8JGMNQKQRC8DG1MB3KC0FER",
+        "delivery_days": 1,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 3,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGMNQKQRC8DG1MB3KC0FER"
+        }
+      },
+      {
+        "id": "01K8JGMNQVWQ9ASEAHP0FQ6JQ7",
+        "pincode": "560001",
+        "dealer_id": "01K8JGMNQKQRC8DG1MB3KC0FER",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 3,
+        "created_at": "2025-10-27T09:40:25.979Z",
+        "updated_at": "2025-10-27T09:40:25.979Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGMNQKQRC8DG1MB3KC0FER"
+        }
+      },
+      {
+        "id": "01K8JGMNQVZGJ3C11Q3FY7KFGT",
+        "pincode": "400001",
+        "dealer_id": "01K8JGA939WXKYE708F241JA81",
+        "delivery_days": 4,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 2,
+        "created_at": "2025-10-27T09:40:25.980Z",
+        "updated_at": "2025-10-27T09:40:25.980Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939WXKYE708F241JA81"
+        }
+      },
+      {
+        "id": "01K8JGVM4JRZ6ACRDE9XTMYH5J",
+        "pincode": "110011",
+        "dealer_id": "01K8JGA939KZH1FY7E04NE95P1",
+        "delivery_days": 2,
+        "is_serviceable": true,
+        "is_cod_available": true,
+        "priority": 1,
+        "created_at": "2025-10-27T09:44:13.714Z",
+        "updated_at": "2025-10-27T09:44:13.715Z",
+        "deleted_at": null,
+        "dealer": {
+          "id": "01K8JGA939KZH1FY7E04NE95P1"
+        }
+      }
+    ],
+    "pincodePrices": [
+      {
+        "id": "01K8N7FRVDPRRE1779VCCP1H1V",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "400101",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.437Z",
+        "updated_at": "2025-10-28T11:09:11.076Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRVXSCS2H44TFE3NKPMY",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "600002",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.453Z",
+        "updated_at": "2025-10-28T11:09:11.092Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRVZZJM59JYFPJR3KSSQ",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "600001",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.455Z",
+        "updated_at": "2025-10-28T11:09:11.095Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRW1V1MNFWKY0BVX506Q",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "600017",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.457Z",
+        "updated_at": "2025-10-28T11:09:11.098Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRX46RKYDT4XZRFMPKTS",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "400001",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.492Z",
+        "updated_at": "2025-10-28T11:09:11.142Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRXYQ3F25GJEPD38GBX6",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "560038",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.518Z",
+        "updated_at": "2025-10-28T11:09:11.172Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRY4YFJFJWMAKY6BWBWQ",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "560001",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.524Z",
+        "updated_at": "2025-10-28T11:09:11.182Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRY8EMN0TQ12WVZ13RJ6",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "560002",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.528Z",
+        "updated_at": "2025-10-28T11:09:11.188Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRYEQN8TTXMST497RE55",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "400051",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.534Z",
+        "updated_at": "2025-10-28T11:09:11.196Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRYGTJJVJD4QGAYH62Y9",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "110002",
+        "is_active": true,
+        "raw_price": {
+          "value": "324",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.536Z",
+        "updated_at": "2025-10-28T12:02:31.814Z",
+        "deleted_at": null,
+        "price": 324
+      },
+      {
+        "id": "01K8N7FRYN4V9TG9BEZPX52NBZ",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "560100",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.541Z",
+        "updated_at": "2025-10-28T11:09:11.205Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRYWR42FPVZ4SR8V1AX8",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "400002",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.548Z",
+        "updated_at": "2025-10-28T11:09:11.214Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRZ3WW31399XD59VHXBY",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "110011",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.556Z",
+        "updated_at": "2025-10-28T11:09:11.226Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRZ5RTQNKVYM2NM5R311",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "110096",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.557Z",
+        "updated_at": "2025-10-28T11:09:11.229Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRZA6CRZB7E3BDQZ0BQ4",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "560066",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.562Z",
+        "updated_at": "2025-10-28T11:09:11.235Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRZC4MHEQYV4JXSQ0X77",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "110016",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.564Z",
+        "updated_at": "2025-10-28T11:09:11.238Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8N7FRZG3KV15YFZ4EDZNVZ7",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "110001",
+        "is_active": true,
+        "raw_price": {
+          "value": "999",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T10:58:11.568Z",
+        "updated_at": "2025-10-28T11:09:11.244Z",
+        "deleted_at": null,
+        "price": 999
+      },
+      {
+        "id": "01K8NC83X4J315K93N6ZJH3S7G",
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "sku": "test",
+        "pincode": "713422",
+        "is_active": true,
+        "raw_price": {
+          "value": "980",
+          "precision": 20
+        },
+        "created_at": "2025-10-28T12:21:23.493Z",
+        "updated_at": "2025-10-28T12:21:23.493Z",
+        "deleted_at": null,
+        "price": 980
+      },
+      {
+        "id": "01K8R1FYSVNK5A2WDEKSGCE3T9",
+        "product_id": "prod_01K8R10WFEC8YWZVVMDRH7BXZH",
+        "sku": "hg",
+        "pincode": "713422",
+        "is_active": true,
+        "raw_price": {
+          "value": "2920",
+          "precision": 20
+        },
+        "created_at": "2025-10-29T13:11:09.371Z",
+        "updated_at": "2025-10-29T13:11:09.371Z",
+        "deleted_at": null,
+        "price": 2920
+      }
+    ],
+    "variants": [
+      {
+        "id": "variant_01K8N5JT1PSH9YB9RBHB1VWN9R",
+        "sku": null,
+        "product_id": "prod_01K8N5JT03JVFG160G07ZMHBRE",
+        "price_set": {
+          "id": "pset_01K8N5JT29AJZX7V64RYB1GHAA",
+          "created_at": "2025-10-28T10:24:53.833Z",
+          "updated_at": "2025-10-28T10:24:53.833Z",
+          "deleted_at": null,
+          "prices": [
+            {
+              "id": "price_01K8N5XTXGXY68VFZCG2S2263V",
+              "title": null,
+              "currency_code": "inr",
+              "min_quantity": null,
+              "max_quantity": null,
+              "rules_count": 0,
+              "price_set_id": "pset_01K8N5JT29AJZX7V64RYB1GHAA",
+              "price_list_id": null,
+              "price_list": null,
+              "raw_amount": {
+                "value": "999",
+                "precision": 20
+              },
+              "created_at": "2025-10-28T10:30:55.154Z",
+              "updated_at": "2025-10-28T11:02:51.803Z",
+              "deleted_at": null,
+              "amount": 999
+            }
+          ]
+        }
+      },
+      {
+        "id": "variant_01K8R10WH6BS7QHD1PRQ4YWTZJ",
+        "sku": null,
+        "product_id": "prod_01K8R10WFEC8YWZVVMDRH7BXZH",
+        "price_set": {
+          "id": "pset_01K8R10WHQNE7KDZTP3QYWBXCB",
+          "created_at": "2025-10-29T13:02:55.543Z",
+          "updated_at": "2025-10-29T13:02:55.543Z",
+          "deleted_at": null,
+          "prices": []
+        }
+      },
+      {
+        "id": "variant_01K8R318NA5GZMX1XN2R54FDXT",
+        "sku": null,
+        "product_id": "prod_01K8R318HTG3S3HFFN7FRK75D0",
+        "price_set": {
+          "id": "pset_01K8R318P1R88JKD4BS7EMP7AX",
+          "created_at": "2025-10-29T13:38:05.122Z",
+          "updated_at": "2025-10-29T13:38:05.122Z",
+          "deleted_at": null,
+          "prices": []
+        }
+      }
+    ]
+  },
+  "counts": {
+    "products": 3,
+    "dealers": 8,
+    "pincodeDealers": 55,
+    "pincodePrices": 19,
+    "variants": 3
+  }
+}

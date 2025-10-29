@@ -2,11 +2,13 @@ import { MedusaService } from "@medusajs/framework/utils";
 import Dealer from "./models/dealer";
 import PincodeDealer from "./models/pincode-dealer";
 import ProductPincodePrice from "./models/product-pincode-price";
+import PincodeMetadata from "./models/pincode-metadata";
 
 class PincodePricingService extends MedusaService({
   Dealer,
   PincodeDealer,
   ProductPincodePrice,
+  PincodeMetadata,
 }) {
   /**
    * Check if a pincode is serviceable
@@ -70,11 +72,14 @@ class PincodePricingService extends MedusaService({
     const bestPrice = prices[0];
 
     // Get dealer info for the best price
-    const dealerInfo = dealers.find((d) => d.dealer.id === bestPrice.dealer_id);
+    // Note: dealer_id removed in new system, keeping for backward compatibility
+    const dealerInfo = dealers.find(
+      (d) => d.dealer.id === (bestPrice as any).dealer_id
+    );
 
     return {
       price: bestPrice.price,
-      dealer: bestPrice.dealer,
+      dealer: (bestPrice as any).dealer || null,
       delivery_days: dealerInfo?.delivery_days || 3,
       is_cod_available: dealerInfo?.is_cod_available || false,
     };
@@ -127,14 +132,14 @@ class PincodePricingService extends MedusaService({
         }
 
         // Create or update price
+        // Note: dealer_id removed in new system, using type assertion for backward compatibility
         await this.createProductPincodePrices({
           product_id: data.product_id,
           sku: data.sku,
           pincode: data.pincode,
-          dealer_id: dealers[0].id,
           price: data.price,
           is_active: true,
-        });
+        } as any);
 
         results.success++;
       } catch (error) {
@@ -183,15 +188,30 @@ class PincodePricingService extends MedusaService({
 
     for (const data of pricesData) {
       try {
-        // Create or update price with default dealer
-        await this.createProductPincodePrices({
+        // Check if price already exists for this product + pincode
+        const existingPrices = await this.listProductPincodePrices({
           product_id: data.product_id,
-          sku: data.sku,
           pincode: data.pincode,
-          dealer_id: defaultDealer.id,
-          price: data.price,
-          is_active: true,
         });
+
+        if (existingPrices.length > 0) {
+          // Update existing price
+          await this.updateProductPincodePrices({
+            id: existingPrices[0].id,
+            price: data.price,
+            sku: data.sku,
+            is_active: true,
+          } as any);
+        } else {
+          // Create new price
+          await this.createProductPincodePrices({
+            product_id: data.product_id,
+            sku: data.sku,
+            pincode: data.pincode,
+            price: data.price,
+            is_active: true,
+          } as any);
+        }
 
         results.success++;
       } catch (error) {

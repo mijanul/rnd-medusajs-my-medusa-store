@@ -57,14 +57,12 @@ export default async function showPricesByProduct({ container }: ExecArgs) {
         `  Price range: ₹${minPrice.toFixed(2)} - ₹${maxPrice.toFixed(2)}`
       );
       console.log(`  Average price: ₹${avgPrice.toFixed(2)}`);
-      console.log("\n  Pincode\t\tPrice (INR)\tDealer");
-      console.log("  " + "-".repeat(90));
+      console.log("\n  Pincode\t\tPrice (INR)");
+      console.log("  " + "-".repeat(60));
 
       for (const price of prices) {
         const priceInINR = (Number(price.price) / 100).toFixed(2);
-        console.log(
-          `  ${price.pincode}\t\t₹${priceInINR}\t\t${price.dealer.name}`
-        );
+        console.log(`  ${price.pincode}\t\t₹${priceInINR}`);
       }
     }
 

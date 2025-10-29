@@ -1,0 +1,119 @@
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    Watching filesystem to reload dev server on file change
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    Skipping instrumentation registration. No register function found.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    No link to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/links. skipped.
+[33mwarn[39m:    Local Event Bus installed. This is not recommended for production.
+[32minfo[39m:    Locking module: Using "in-memory" as default.
+[32minfo[39m:    No workflow to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/workflows. skipped.
+[32minfo[39m:    No subscriber to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/subscribers. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/medusa/dist/jobs. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/jobs. skipped.
+- Creating server
+Error: listen EADDRINUSE: address already in use :::9000
+    at Server.setupListenHandle [as _listen2] (node:net:1939:16)
+    at listenInCluster (node:net:1996:12)
+    at Server.listen (node:net:2101:7)
+    at internalStart (/Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/medusa/src/commands/start.ts:223:15)
+    at async start (/Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/medusa/src/commands/start.ts:305:5) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 9000
+}
+[32minfo[39m:    src/modules/pincode-pricing/service.ts modified: Restarting dev server
+[32minfo[39m:    Gracefully shutting down server
+[32minfo[39m:    WEEK3_PHASE4_FIXES.md modified: Restarting dev server
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    Skipping instrumentation registration. No register function found.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    No link to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/links. skipped.
+[33mwarn[39m:    Local Event Bus installed. This is not recommended for production.
+[32minfo[39m:    Locking module: Using "in-memory" as default.
+[32minfo[39m:    No workflow to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/workflows. skipped.
+[32minfo[39m:    No subscriber to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/subscribers. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/medusa/dist/jobs. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/jobs. skipped.
+- Creating server
+✔ Server is ready on port: 9000 – 22ms
+[32minfo[39m:    Admin URL → http://localhost:9000/app
+[32minfo[39m:    src/scripts/show-prices-by-product.ts modified: Restarting dev server
+[32minfo[39m:    Gracefully shutting down server
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    Skipping instrumentation registration. No register function found.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    No link to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/links. skipped.
+[33mwarn[39m:    Local Event Bus installed. This is not recommended for production.
+[32minfo[39m:    Locking module: Using "in-memory" as default.
+[32minfo[39m:    No workflow to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/workflows. skipped.
+[32minfo[39m:    No subscriber to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/subscribers. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/medusa/dist/jobs. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/jobs. skipped.
+- Creating server
+Error: listen EADDRINUSE: address already in use :::9000
+    at Server.setupListenHandle [as _listen2] (node:net:1939:16)
+    at listenInCluster (node:net:1996:12)
+    at Server.listen (node:net:2101:7)
+    at internalStart (/Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/medusa/src/commands/start.ts:223:15)
+    at async start (/Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/medusa/src/commands/start.ts:305:5) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 9000
+}
+[32minfo[39m:    src/scripts/sync-prices-to-pincode.ts modified: Restarting dev server
+[32minfo[39m:    Gracefully shutting down server
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    Skipping instrumentation registration. No register function found.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    No link to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/links. skipped.
+[33mwarn[39m:    Local Event Bus installed. This is not recommended for production.
+[32minfo[39m:    Locking module: Using "in-memory" as default.
+[32minfo[39m:    No workflow to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/workflows. skipped.
+[32minfo[39m:    No subscriber to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/subscribers. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/medusa/dist/jobs. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/jobs. skipped.
+- Creating server
+✔ Server is ready on port: 9000 – 267ms
+[32minfo[39m:    Admin URL → http://localhost:9000/app
+[32minfo[39m:    src/scripts/test-manual-sync.ts modified: Restarting dev server
+[32minfo[39m:    Gracefully shutting down server
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    Skipping instrumentation registration. No register function found.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    No link to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/links. skipped.
+[33mwarn[39m:    Local Event Bus installed. This is not recommended for production.
+[32minfo[39m:    Locking module: Using "in-memory" as default.
+[32minfo[39m:    No workflow to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/workflows. skipped.
+[32minfo[39m:    No subscriber to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/subscribers. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/medusa/dist/jobs. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/jobs. skipped.
+- Creating server
+✔ Server is ready on port: 9000 – 43ms
+[32minfo[39m:    Admin URL → http://localhost:9000/app
+[32minfo[39m:    src/scripts/verify-prices.ts modified: Restarting dev server
+[32minfo[39m:    Gracefully shutting down server
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    Skipping instrumentation registration. No register function found.
+[32minfo[39m:    redisUrl not found. A fake redis instance will be used.
+[32minfo[39m:    No link to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/links. skipped.
+[33mwarn[39m:    Local Event Bus installed. This is not recommended for production.
+[32minfo[39m:    Locking module: Using "in-memory" as default.
+[32minfo[39m:    No workflow to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/workflows. skipped.
+[32minfo[39m:    No subscriber to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/subscribers. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/medusa/dist/jobs. skipped.
+[32minfo[39m:    No job to load from /Users/mijanul/Projects/medusa/my-medusa-store/node_modules/@medusajs/draft-order/.medusa/server/src/jobs. skipped.
+- Creating server
+✔ Server is ready on port: 9000 – 181ms
+[32minfo[39m:    Admin URL → http://localhost:9000/app
+[32minfo[39m:    medusa-dev.log modified: Restarting dev server
+[32minfo[39m:    Gracefully shutting down server

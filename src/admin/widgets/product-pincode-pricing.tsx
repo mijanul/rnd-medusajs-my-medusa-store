@@ -1,3 +1,18 @@
+/**
+ * ⚠️ DEPRECATED: This widget uses the OLD API
+ *
+ * Please use: product-pincode-pricing-v2.tsx
+ * New widget location: /src/admin/widgets/product-pincode-pricing-v2.tsx
+ *
+ * This file is kept for backward compatibility only.
+ * Switch to the new widget for:
+ * - Statistics display (min/max/avg prices)
+ * - Coverage metrics (states/cities)
+ * - Search and filter improvements
+ * - Pagination
+ * - Better UI/UX
+ */
+
 import { defineWidgetConfig } from "@medusajs/admin-sdk";
 import { Container, Heading, Button, Input, toast } from "@medusajs/ui";
 import { useEffect, useState } from "react";

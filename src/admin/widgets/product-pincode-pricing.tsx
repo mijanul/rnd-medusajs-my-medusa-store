@@ -2,16 +2,6 @@ import { defineWidgetConfig } from "@medusajs/admin-sdk";
 import { Container, Heading, Button, Input, toast } from "@medusajs/ui";
 import { useEffect, useState } from "react";
 
-/**
- * Pincode Pricing Widget for Product Detail Page
- *
- * Displays and manages pincode-based prices for a product.
- * Features:
- * 1. One price per pincode (applies to all dealers)
- * 2. Search by pincode
- * 3. Edit individual prices
- * 4. Unique constraint: product_id + pincode
- */
 const ProductPincodePricingWidget = ({ data }: { data: any }) => {
   const [pincodePrices, setPincodePrices] = useState<any[]>([]);
   const [filteredPrices, setFilteredPrices] = useState<any[]>([]);
@@ -24,6 +14,7 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
   const [newPincodes, setNewPincodes] = useState<
     Array<{ pincode: string; price: string }>
   >([{ pincode: "", price: "" }]);
+  const [isSaving, setIsSaving] = useState(false);
 
   const productId = data?.id;
 
@@ -153,13 +144,34 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
       return;
     }
 
+    // Check for duplicate pincodes in the form
+    const pincodeSet = new Set();
+    const duplicates = [];
+    for (const item of validPincodes) {
+      const pincode = item.pincode.trim();
+      if (pincodeSet.has(pincode)) {
+        duplicates.push(pincode);
+      }
+      pincodeSet.add(pincode);
+    }
+
+    if (duplicates.length > 0) {
+      toast.error(`Duplicate pincodes found: ${duplicates.join(", ")}`);
+      return;
+    }
+
     // Validate pincode format (6 digits)
     const invalidPincodes = validPincodes.filter(
       (item) => !/^\d{6}$/.test(item.pincode.trim())
     );
 
     if (invalidPincodes.length > 0) {
-      toast.error("Pincode must be exactly 6 digits");
+      const invalidList = invalidPincodes
+        .map((item) => item.pincode)
+        .join(", ");
+      toast.error(
+        `Invalid pincode format: ${invalidList}. Must be exactly 6 digits.`
+      );
       return;
     }
 
@@ -169,9 +181,29 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
     );
 
     if (invalidPrices.length > 0) {
-      toast.error("Price must be a positive number");
+      const invalidList = invalidPrices.map((item) => item.pincode).join(", ");
+      toast.error(
+        `Invalid price for pincode(s): ${invalidList}. Price must be a positive number.`
+      );
       return;
     }
+
+    // Check if pincodes already exist in the database
+    const existingPincodes = validPincodes.filter((item) =>
+      pincodePrices.some((existing) => existing.pincode === item.pincode.trim())
+    );
+
+    if (existingPincodes.length > 0) {
+      const existingList = existingPincodes
+        .map((item) => item.pincode)
+        .join(", ");
+      toast.error(
+        `Pincode(s) already exist: ${existingList}. Please use edit to update existing prices.`
+      );
+      return;
+    }
+
+    setIsSaving(true);
 
     try {
       const response = await fetch(`/admin/pincode-pricing/prices`, {
@@ -195,18 +227,46 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
       if (response.ok) {
         const result = await response.json();
         console.log("Create response:", result);
-        toast.success(`Successfully added ${validPincodes.length} pincode(s)`);
+        toast.success(
+          `Successfully added ${validPincodes.length} pincode${
+            validPincodes.length > 1 ? "s" : ""
+          }`
+        );
         setShowAddForm(false);
         setNewPincodes([{ pincode: "", price: "" }]);
         setRefreshKey((prev) => prev + 1);
       } else {
-        const error = await response.json();
+        const error = await response
+          .json()
+          .catch(() => ({ message: "Failed to add pincodes" }));
         console.error("Create failed:", error);
-        toast.error(error.message || "Failed to add pincodes");
+
+        // Handle specific error cases
+        if (response.status === 409) {
+          toast.error("One or more pincodes already exist for this product");
+        } else if (response.status === 400) {
+          toast.error(
+            error.message || "Invalid request. Please check your input."
+          );
+        } else if (response.status === 401 || response.status === 403) {
+          toast.error("You don't have permission to add pincode prices");
+        } else if (response.status >= 500) {
+          toast.error("Server error. Please try again later.");
+        } else {
+          toast.error(error.message || "Failed to add pincodes");
+        }
       }
     } catch (error) {
       console.error("Error adding pincodes:", error);
-      toast.error("Error adding pincodes");
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        toast.error(
+          "Network error. Please check your connection and try again."
+        );
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -341,11 +401,26 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
               ))}
             </div>
             <div className="flex gap-2 mt-4">
-              <Button variant="secondary" onClick={handleAddPincode}>
+              <Button
+                variant="secondary"
+                onClick={handleAddPincode}
+                disabled={isSaving}
+              >
                 + Add More
               </Button>
-              <Button variant="primary" onClick={handleSavePincodes}>
-                Save All
+              <Button
+                variant="primary"
+                onClick={handleSavePincodes}
+                disabled={
+                  isSaving ||
+                  newPincodes.every(
+                    (item) => !item.pincode.trim() || !item.price.trim()
+                  )
+                }
+              >
+                {isSaving
+                  ? "Saving..."
+                  : `Save ${newPincodes.length > 1 ? "All" : "Selected"}`}
               </Button>
             </div>
           </div>

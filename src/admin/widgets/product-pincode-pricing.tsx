@@ -270,28 +270,6 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
     }
   };
 
-  const handleSyncFromCurrency = async () => {
-    try {
-      const response = await fetch(
-        `/admin/pincode-pricing/sync-product/${productId}`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
-
-      if (response.ok) {
-        toast.success("Prices synced from currency pricing");
-        setRefreshKey((prev) => prev + 1);
-      } else {
-        toast.error("Failed to sync prices");
-      }
-    } catch (error) {
-      console.error("Error syncing prices:", error);
-      toast.error("Error syncing prices");
-    }
-  };
-
   if (loading) {
     return (
       <Container>
@@ -342,13 +320,7 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
             >
               {showAddForm ? "Cancel" : "Add Pincode"}
             </Button>
-            <Button
-              variant="secondary"
-              onClick={handleSyncFromCurrency}
-              disabled={loading}
-            >
-              Sync from Currency Price
-            </Button>
+
             <Button
               variant="secondary"
               onClick={() => (window.location.href = "/app/pincode-pricing")}
@@ -449,16 +421,10 @@ const ProductPincodePricingWidget = ({ data }: { data: any }) => {
               <div>
                 <p className="font-medium">No pincode prices yet</p>
                 <p className="text-ui-fg-subtle text-sm mt-1">
-                  Click "Sync from Currency Price" to auto-generate prices for
-                  all pincodes,
-                  <br />
                   or use "Manage via CSV" to bulk upload prices
                 </p>
               </div>
               <div className="flex gap-2 mt-2">
-                <Button variant="primary" onClick={handleSyncFromCurrency}>
-                  Sync from Currency Price
-                </Button>
                 <Button
                   variant="secondary"
                   onClick={() =>

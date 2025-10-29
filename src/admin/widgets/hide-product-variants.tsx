@@ -56,6 +56,22 @@ const HideProductVariantsWidget = () => {
       div.shadow-elevation-card-rest:has(.txt-compact-small-plus:contains("Variants")) {
         display: none !important;
       }
+
+      /* Hide the "Title" column header in product create/edit */
+      div[role="columnheader"][data-column-index="1"]:has-text("Title"),
+      div[role="columnheader"][data-column-index="1"].txt-compact-small-plus {
+        display: none !important;
+      }
+
+      /* Hide the "Default variant" grid cell */
+      div[role="gridcell"][data-column-index="1"] {
+        display: none !important;
+      }
+
+      /* Alternative selector for Title column header */
+      [role="columnheader"][data-column-index="1"] {
+        display: none !important;
+      }
     `;
 
     document.head.appendChild(style);
@@ -113,6 +129,20 @@ const HideProductVariantsWidget = () => {
           if (hasVariantsHeading) {
             (card as HTMLElement).style.display = "none";
           }
+        });
+
+      // Hide "Title" column header (data-column-index="1")
+      document
+        .querySelectorAll('[role="columnheader"][data-column-index="1"]')
+        .forEach((header) => {
+          (header as HTMLElement).style.display = "none";
+        });
+
+      // Hide "Default variant" grid cells (data-column-index="1")
+      document
+        .querySelectorAll('[role="gridcell"][data-column-index="1"]')
+        .forEach((cell) => {
+          (cell as HTMLElement).style.display = "none";
         });
     };
 
